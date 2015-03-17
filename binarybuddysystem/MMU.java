@@ -53,14 +53,15 @@ public class MMU
 	
 	private boolean merge(int index, int chunkSize)		//index or hole
 	{
-		if((memory[index].buddyReference == memory[index+1].buddyReference)
-				&& memory[index].empty() && memory[index+1].empty())
+		int a = chunkSize/minChunkSize;
+		if((memory[index].buddyReference == memory[index+a].buddyReference)
+				&& memory[index].empty() && memory[index+a].empty())
 		{
 			memory[index+1] = memory[index];
 			return true;
 		}
-		else if(index != 0 && (memory[index].buddyReference == memory[index-11].buddyReference)
-				&& memory[index].empty() && memory[index-11].empty())
+		else if(index != 0 && (memory[index].buddyReference == memory[index-1].buddyReference)
+				&& memory[index].empty() && memory[index-1].empty())
 		{
 			memory[index-1] = memory[index];
 			return true;
