@@ -3,7 +3,14 @@ package binarybuddysystem;
 public class MMU
 {
 	Process[] memory; 	//Might make wrapper class (Chunk)
+						//Each element is the mininum chunk size
 						//Should it be a LinkedList instead?
+	
+	int minChunkSize;	//Minimum chunk size (2^k)
+	int memorySize;		//Total Memory Size	(2^n)
+	/*
+	 * memorySize = memory.length * minChunkSize;
+	 */
 	
 	public MMU()
 	{
@@ -17,6 +24,25 @@ public class MMU
 	
 	public boolean deallocate(String name)
 	{
+		int i = 0;
+		while(i < memorySize)
+		{
+			if(memory[i].getName().equals(name))
+			{
+				int chunkSize = memory[i].size();
+				memory[i].emptyProcess();
+				merge(i, chunkSize);
+				return true;
+			}
+			//Able to skip more memory this way
+			i += memory[i].size()/minChunkSize; 
+			
+			/* Reason for having Chunk class: Able to show internal
+			 * fragmentation and minimum chunkSize equally without
+			 * any struggle.
+			 */
+		}
+		
 		return false;
 	}
 	
@@ -25,8 +51,21 @@ public class MMU
 		return false;
 	}
 	
-	private boolean merge(int index)		//index or hole
+	private boolean merge(int index, int chunkSize)		//index or hole
 	{
+		if((memory[index].buddyReference == memory[index+1].buddyReference)
+				&& memory[index].empty() && memory[index+1].empty())
+		{
+			memory[index+1] = memory[index];
+			return true;
+		}
+		else if(index != 0 && (memory[index].buddyReference == memory[index-11].buddyReference)
+				&& memory[index].empty() && memory[index-11].empty())
+		{
+			memory[index-1] = memory[index];
+			return true;
+		}
+		
 		return false;
 	}
 	
