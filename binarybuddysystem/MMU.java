@@ -12,16 +12,31 @@ public class MMU
 	 * memorySize = memory.length * minChunkSize;
 	 */
 	
+
+	/**
+	 * Default constructor for the MMU
+	 * @param blocks number of blocks this MMU is responsible for
+	 */
 	public MMU()
 	{
 		
 	}
 	
+	/**
+	 * Allocates memory for a Process
+	 * @param p the process to allocate and add to the Memory
+	 * @return true on success, false otherwise
+	 */
 	public boolean allocate(Process p)
 	{
 		return false;
 	}
 	
+	/**
+	 * Deallocates memory and removes a Process
+	 * @param name Process to be removed
+	 * @return true if successful, false if otherwise
+	 */
 	public boolean deallocate(String name)
 	{
 		int i = 0;
@@ -39,6 +54,7 @@ public class MMU
 		
 		return false;
 	}
+	
 	
 	private boolean partition(int index)	//index or hole
 	{
