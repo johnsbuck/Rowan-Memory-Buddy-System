@@ -2,7 +2,7 @@ package binarybuddysystem;
 
 public class MMU
 {
-	Process[] memory; 	//Might make wrapper class (Chunk)
+	Chunk[] memory; 	//Might make wrapper class (Chunk)
 						//Each element is the minimum chunk size
 						//Should it be a LinkedList instead?
 	
@@ -27,20 +27,14 @@ public class MMU
 		int i = 0;
 		while(i < memorySize)
 		{
-			if(memory[i].getName().equals(name))
+			if(memory[i].getProcess().getName().equals(name))
 			{
-				int chunkSize = memory[i].size();
-				memory[i].emptyProcess();
-				merge(i, chunkSize);
+				memory[i].removeProcess();
+				merge(i);
 				return true;
 			}
 			//Able to skip more memory this way
-			i += memory[i].size()/minChunkSize; 
-			
-			/* Reason for having Chunk class: Able to show internal
-			 * fragmentation and minimum chunkSize equally without
-			 * any struggle.
-			 */
+			i += memory[i].getChunkSize()/minChunkSize; 
 		}
 		
 		return false;
@@ -51,21 +45,37 @@ public class MMU
 		return false;
 	}
 	
-	private boolean merge(int index, int chunkSize)		//index or hole
+	private boolean merge(int index)		//index or hole
 	{
-		int a = chunkSize/minChunkSize;
-		if((memory[index].buddyReference == memory[index+a].buddyReference)
-				&& memory[index].empty() && memory[index+a].empty())
+		if(memory[index].getChunkSize() ==  memorySize)
+			return false;
+		
+		int a = memory[index].getChunkSize()/minChunkSize;
+		
+		if(index + a < memory.length && memory[index].isHole() && memory[index+a].isHole() 
+				&& (memory[index].getBuddyReference() == memory[index+a].getIndexPoint())
+				&& (memory[index].getChunkSize() == memory[index+a].getChunkSize()))
 		{
-			memory[index+1] = memory[index];
-			memory[index] = new Process((chunkSize * 2));	//Chunk doubled in size
+			memory[index].doubleChunkSize();
+			
+			int size = memory[index+a].getChunkSize()/minChunkSize;
+			
+			for(int i = index+a; i < size; i++)
+				memory[i] = memory[index];
+			
 			return true;
 		}
-		else if(index != 0 && (memory[index].buddyReference == memory[index-1].buddyReference)
-				&& memory[index].empty() && memory[index-1].empty())
+		else if(index != 0 && memory[index].isHole() && memory[index-1].isHole()
+				&& (memory[index].getBuddyReference() == memory[index-1].getIndexPoint())
+				&& (memory[index].getChunkSize() == memory[index-1].getChunkSize()))
 		{
-			memory[index-1] = memory[index];
-			memory[index] = new Process((chunkSize * 2));	//Chunk doubled in size
+			memory[index-1].doubleChunkSize();
+			
+			int size = memory[index].getChunkSize()/minChunkSize;
+			
+			for(int i = index; i < size; i++)
+				memory[i] = memory[index-1];
+			
 			return true;
 		}
 		

@@ -4,8 +4,6 @@ public class Chunk
 {
     private Process process;
     private int chunkSize;          //2^n
-    private int minChunkSize;
-    private int maxChunkSize;
     private int point;				//The chunk's indexing point
     private int buddyReference;     //Points to buddy chunk, which must be the same size
                                     //and point back to this chunk (neighboring)
@@ -15,17 +13,15 @@ public class Chunk
         process = null; //or new Process()
         chunkSize = 0;
         buddyReference = 0;
-        minChunkSize = 0;
-        maxChunkSize = 0;
+        point = 0;
     }
     
-    public Chunk(Process p, int chunkSize, int minChunkSize, int maxChunkSize, int reference)
+    public Chunk(Process p, int chunkSize, int point, int reference)
     {
         process = p; //or equivalent to safe assignment
         this.chunkSize = chunkSize;
         buddyReference = reference;
-        this.minChunkSize = minChunkSize;
-        this.maxChunkSize = maxChunkSize;
+        this.point = point;
     }
     
     public Process getProcess()
@@ -38,11 +34,11 @@ public class Chunk
         process = p;
     }
     
-    public boolean emptyChunk()
+    public boolean removeProcess()
     {
         process = null;
         
-        return hole();
+        return isHole();
     }
     
     public boolean isHole()
@@ -57,35 +53,19 @@ public class Chunk
         return chunkSize;
     }
     
-    public boolean setChunkSize(int size)
+    public void setChunkSize(int size)
     {
-    	if(chunkSize >= minChunkSize && chunkSize <- maxChunkSize)
-    	{
-    		chunkSize = size;
-    		return true;
-    	}
-    	
-    	return false;
+    	chunkSize = size;
     }
     
-    public boolean doubleChunkSize()
+    public void doubleChunkSize()
     {
-        if(chunkSize < maxChunkSize)
-        {
-            chunkSize *= 2;
-            return true;
-        }
-        return false;
+    	chunkSize *= 2;
     }
     
-    public boolean cutChunkSize()
+    public void cutChunkSize()
     {
-        if(chunkSize > minChunkSize)
-        {
-            chunkSize /= 2;
-            return true;
-        }
-        return false;
+    	chunkSize /= 2;
     }
     
     public int getBuddyReference()
@@ -93,14 +73,9 @@ public class Chunk
         return buddyReference;
     }
     
-    public boolean setBuddyReference(int reference)
+    public void setBuddyReference(int reference)
     {
-    	if(maxChunkSize/minChunkSize > reference && reference >= 0)
-    	{
-    		buddyReference = reference;
-    		return false;
-    	}
-    	return false;
+    	buddyReference = reference;
     }
     
     public int getIndexPoint()
@@ -108,13 +83,8 @@ public class Chunk
     	return point;
     }
     
-    public in setIndexPoint(int index)
+    public void setIndexPoint(int index)
     {
-    	if(maxChunkSize/minChunkSize > index && index >= 0)
-    	{
-    		point = index;
-    		return true;
-    	}
-    	return false;
+    	point = index;
     }
 }
