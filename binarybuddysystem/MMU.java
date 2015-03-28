@@ -3,7 +3,7 @@ package binarybuddysystem;
 public class MMU
 {
 	Process[] memory; 	//Might make wrapper class (Chunk)
-						//Each element is the mininum chunk size
+						//Each element is the minimum chunk size
 						//Should it be a LinkedList instead?
 	
 	int minChunkSize;	//Minimum chunk size (2^k)
@@ -58,12 +58,14 @@ public class MMU
 				&& memory[index].empty() && memory[index+a].empty())
 		{
 			memory[index+1] = memory[index];
+			memory[index] = new Process((chunkSize * 2));	//Chunk doubled in size
 			return true;
 		}
 		else if(index != 0 && (memory[index].buddyReference == memory[index-1].buddyReference)
 				&& memory[index].empty() && memory[index-1].empty())
 		{
 			memory[index-1] = memory[index];
+			memory[index] = new Process((chunkSize * 2));	//Chunk doubled in size
 			return true;
 		}
 		
