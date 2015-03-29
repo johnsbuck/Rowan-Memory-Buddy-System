@@ -21,15 +21,14 @@ public class MMU
 	public MMU(int memSize, int chunkSize)
 	{		
 		memorySize = memSize;
-		chunkSize = chunkSize;
+		this.chunkSize = chunkSize;
 		numChunks = memorySize/chunkSize;
 		//initialize memory # of Chunks = memorySize/ChunkSize
 		//If prior 2 are chosen correctly, should divide evenly
 		memory = new Slot[numChunks];
 		
 		//Initialize that the entire memory is one unit that is a hole
-		Process initial = new Process("hole", numChunks);
-		memory[0]=new Slot(initial, numChunks, 0, 0);
+		memory[0]=new Slot(null, numChunks, 0, 0);
 	}
 	
 	/**
@@ -41,8 +40,7 @@ public class MMU
 	{
 		//Need to find best chunkSize to fit process in
 		int processSize = p.size();
-		//how many chunks in memory this process will take up
-		int chunksNeeded = 1;
+		
 		
 		//Start at minChunkSize and keep doubling until processSize fits.
 		//This will give us the best fit for the process
@@ -52,29 +50,33 @@ public class MMU
 		}
 		
 		//This will give us the amount of chunks needed for this process in memory.
-		chunksNeeded = i / chunkSize;
+		int chunksNeeded= i / chunkSize;
 		
 		//Now that we have the number of chunks, lets find a hole that has enough space in it to fit
-		//Easiest case
 		i=0;
-		Process slot;//will be used in loop
-		while(i<numChunks){
-			slot = memory[i].getProcess();
-			//we found a hole!
-			if(slot.getName().equals("hole")){
-				//check if Size is large enough
-				if(slot.size()>=chunksNeeded){
-					//Ok, this slot is large enough, Lets see if we can break it up
-					//and get a better fit
-					while(slot.size()/2 >= chunksNeeded){
-						//We can split this hole into two buddy holes
-						
+		boolean allocated = false;
+		while(i<numChunks && !allocated){
+			Slot s = memory[i];
+			int initialSlotSize = s.getSize(); 
+			if(s.isHole()){
+				//We found a hole, lets see if the process can fit in here
+				if(s.getSize()>=chunksNeeded){
+					//process will fit in slot, lets see if we can make smaller slots
+					//so the process fits better
+					while(s.getSize()/2 >=chunksNeeded){
+						s.cutChunkSize();
+						s.setIndexPoint(s.getIndexPoint()*2);
+						//Need to make a new slot to represent the hole that was created
+						Slot hole = new Slot(null, s.getSize(), s.getIndexPoint()+1, s.getIndexPoint());
+						memory[i+s.getSize()]=hole;
+						s.setBuddyReference(s.getIndexPoint()+1);
 					}
-				}
-				else{
-					//check if this hole is bordering another hole and allocate accordingly
+					//finally set the process to the slot after all the holes
+					s.setProcess(p);
+					allocated = true;
 				}
 			}
+			i+=initialSlotSize;
 		}
 		
 		
@@ -101,7 +103,7 @@ public class MMU
 				return true;
 			}
 			//Able to skip more memory this way
-			i += memory[i].getChunkSize()/chunkSize; 
+			i += memory[i].getSize()/chunkSize; 
 		}
 		
 		return false;
@@ -120,17 +122,17 @@ public class MMU
 	private boolean merge(int index)		//index or hole
 	{
 		//If the chunk is the max size of memory, return false
-		if(memory[index].getChunkSize() ==  memorySize)
+		if(memory[index].getSize() ==  memorySize)
 			return false;
 		
 		//Indexes past to the next different chunk
-		int a = memory[index].getChunkSize()/chunkSize;
+		int a = memory[index].getSize()/chunkSize;
 		
 		//If it is within memory bounds, both chunks are empty, and are buddies
 		//then merge
 		if(index + a < memory.length && memory[index].isHole() && memory[index+a].isHole() 
 				&& (memory[index].getRef() == memory[index+a].getIndexPoint())
-				&& (memory[index].getChunkSize() == memory[index+a].getChunkSize()))
+				&& (memory[index].getSize() == memory[index+a].getSize()))
 		{
 			//Index doubles the chunk size
 			memory[index].doubleChunkSize();
@@ -148,7 +150,7 @@ public class MMU
 				memory[index].setBuddyReference(memory[index].getIndexPoint()+1);
 			
 			//Number of indexes in buddy chunk
-			int size = memory[index+a].getChunkSize()/chunkSize;
+			int size = memory[index+a].getSize()/chunkSize;
 			
 			//Set each of the buddy chunk's min chunks to the new chunk
 			for(int i = index+a; i < size; i++)
@@ -160,7 +162,7 @@ public class MMU
 		//If the next chunk isn't a buddy, check the previous chunk 
 		else if(index != 0 && memory[index].isHole() && memory[index-1].isHole()
 				&& (memory[index].getRef() == memory[index-1].getIndexPoint())
-				&& (memory[index].getChunkSize() == memory[index-1].getChunkSize()))
+				&& (memory[index].getSize() == memory[index-1].getSize()))
 		{
 			//Previous chunk doubles chunk size
 			memory[index-1].doubleChunkSize();
@@ -178,7 +180,7 @@ public class MMU
 				memory[index-1].setBuddyReference(memory[index-1].getIndexPoint()+1);
 			
 			//Number of indexes in buddy chunk
-			int size = memory[index].getChunkSize()/chunkSize;
+			int size = memory[index].getSize()/chunkSize;
 			
 			//Set each of the buddy chunk's min chunks to the new chunk
 			for(int i = index; i < size; i++)
@@ -198,7 +200,7 @@ public class MMU
 		int i =0;
 		while(i<size){
 			content += memory[i] + "\n";
-			i += memory[i].getProcess().size();
+			i += memory[i].getSize();
 		}
 
 		return content;

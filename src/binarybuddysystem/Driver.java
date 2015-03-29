@@ -7,7 +7,9 @@ public class Driver
 	public static void main(String[] args)
 	{
 		MMU memory = new MMU(16, 2);
-		//memory.allocate(new Process("a", 4);
+		memory.allocate(new Process("a", 4));
+		memory.allocate(new Process("b", 2));
+		memory.allocate(new Process("c", 6));
 		System.out.println(memory);
 	}
 	

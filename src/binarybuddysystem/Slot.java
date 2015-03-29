@@ -3,7 +3,7 @@ package binarybuddysystem;
 public class Slot
 {
     private Process process;
-    private int chunkSize;          //2^n
+    private int size;          //2^n
     private int point;				//The chunk's indexing point
     private int ref;     //Points to buddy chunk, which must be the same size
                                     //and point back to this chunk (neighboring)
@@ -14,7 +14,7 @@ public class Slot
     public Slot()
     {
         process = null; //or new Process()
-        chunkSize = 0;
+        size = 0;
         ref = 0;
         point = 0;
     }
@@ -29,7 +29,7 @@ public class Slot
     public Slot(Process p, int chunkSize, int point, int reference)
     {
         process = p; //or equivalent to safe assignment
-        this.chunkSize = chunkSize;
+        size = chunkSize;
         ref = reference;
         this.point = point;
     }
@@ -78,9 +78,9 @@ public class Slot
 	 * Gets the Chunk size
 	 * @return size of the Chunk
 	 */
-    public int getChunkSize()
+    public int getSize()
     {
-        return chunkSize;
+        return size;
     }
     
     /**
@@ -90,7 +90,7 @@ public class Slot
 	 */
     public void setChunkSize(int size)
     {
-    	chunkSize = size;
+    	this.size = size;
     }
     
     /**
@@ -98,7 +98,7 @@ public class Slot
 	 */
     public void doubleChunkSize()
     {
-    	chunkSize *= 2;
+    	size *= 2;
     }
     
     /**
@@ -106,7 +106,7 @@ public class Slot
 	 */
     public void cutChunkSize()
     {
-    	chunkSize /= 2;
+    	size /= 2;
     }
     
     /**
@@ -151,6 +151,12 @@ public class Slot
      */
     public String toString()
     {
-    	return "name: "+process.getName()+", size: "+chunkSize+", points: "+point+" buddy: "+ ref;
+    	if(isHole()){
+    		return "Hole. size: "+size+" chunks, points: "+point+" buddy: "+ ref;  		
+    	}
+    	else
+    	{
+    		return "name: "+process.getName()+", size: "+size+" chunks, points: "+point+" buddy: "+ ref;
+    	}
     }
 }
