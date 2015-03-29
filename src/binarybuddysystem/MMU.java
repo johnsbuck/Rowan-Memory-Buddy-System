@@ -19,7 +19,23 @@ public class MMU
 	 */
 	public MMU()
 	{
+		memorySize = 0;
+		minChunkSize = 0;
+		memory = new Chunk[memorySize/minChunkSize];
+	}
+	
+	public MMU(int mSize, int minSize)
+	{
+		memorySize = mSize;
+		minChunkSize = minSize;
+		memory = new Chunk[memorySize/minChunkSize];
 		
+		Chunk firstChunk = new Chunk(null, memorySize/minChunkSize, 0, 0);
+		
+		for(int i = 0; i < memorySize/minChunkSize; i++)
+		{
+			memory[i] = firstChunk;
+		}
 	}
 	
 	/**
@@ -106,6 +122,8 @@ public class MMU
 			for(int i = index+a; i < size; i++)
 				memory[i] = memory[index];
 			
+			//Try to merge with larger buddy
+			merge(index);
 			//Has merged
 			return true;
 		}
@@ -136,6 +154,10 @@ public class MMU
 			for(int i = index; i < size; i++)
 				memory[i] = memory[index-1];
 			
+			size = memory[index-1].getChunkSize()/minChunkSize;
+			
+			//Try to merge with larger chunk
+			merge(index - size);
 			//Has merged
 			return true;
 		}
