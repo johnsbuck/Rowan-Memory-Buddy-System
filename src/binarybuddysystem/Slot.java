@@ -1,21 +1,21 @@
 package binarybuddysystem;
 
-public class Chunk
+public class Slot
 {
     private Process process;
     private int chunkSize;          //2^n
     private int point;				//The chunk's indexing point
-    private int buddyReference;     //Points to buddy chunk, which must be the same size
+    private int ref;     //Points to buddy chunk, which must be the same size
                                     //and point back to this chunk (neighboring)
     
     /**
 	 * Instantiates a new, blank Chunk
 	 */
-    public Chunk()
+    public Slot()
     {
         process = null; //or new Process()
         chunkSize = 0;
-        buddyReference = 0;
+        ref = 0;
         point = 0;
     }
     
@@ -26,11 +26,11 @@ public class Chunk
 	 * @param point is the reference used by the Buddy of this Chunk
 	 * @param reference references to the Buddy of this Chunk
 	 */
-    public Chunk(Process p, int chunkSize, int point, int reference)
+    public Slot(Process p, int chunkSize, int point, int reference)
     {
         process = p; //or equivalent to safe assignment
         this.chunkSize = chunkSize;
-        buddyReference = reference;
+        ref = reference;
         this.point = point;
     }
     
@@ -113,9 +113,9 @@ public class Chunk
 	 * Gets the "buddy" reference to this Chunk
 	 * @return the adjacent "buddy" Chunk
 	 */
-    public int getBuddyReference()
+    public int getRef()
     {
-        return buddyReference;
+        return ref;
     }
     
     /**
@@ -124,7 +124,7 @@ public class Chunk
 	 */
     public void setBuddyReference(int reference)
     {
-    	buddyReference = reference;
+    	ref = reference;
     }
     
     /**
@@ -151,6 +151,6 @@ public class Chunk
      */
     public String toString()
     {
-    	return "name: "+process.getName()+", size: "+chunkSize+", points: "+point+" buddy: "+buddyReference;
+    	return "name: "+process.getName()+", size: "+chunkSize+", points: "+point+" buddy: "+ ref;
     }
 }
