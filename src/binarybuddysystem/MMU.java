@@ -168,7 +168,22 @@ public class MMU
 	
 	public String toString()
 	{
-		String str = "";
+		String str = "Min Chunk Size: " + minChunkSize
+				+ "\nTotal Memory: " + memorySize + "\n\n";
+		String line[] = new String[3];
+		line[0] = "|Index:    |";
+		line[1] = "|Process:  |";
+		line[2] = "|C&P Size: |";
+		
+		int i = 0;
+		while(i < memorySize)
+		{
+			line[0] += memory[i].getIndexPoint() + "\t|";
+			line[1] += memory[i].getProcess().getName() + "\t|";
+			line[2] += memory[i].getChunkSize() + ":" + memory[i].getProcess().size() + "\t|";
+		}
+		
+		str += line[0] +"\n" + line[1] + "\n" + line[2] + "\n";
 		
 		return str;
 	}
