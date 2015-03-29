@@ -64,12 +64,12 @@ public class MMU
 					//process will fit in slot, lets see if we can make smaller slots
 					//so the process fits better
 					while(s.getSize()/2 >=chunksNeeded){
-						s.cutChunkSize();
-						s.setIndexPoint(s.getIndexPoint()*2);
+						s.cutSize();
+						s.setPoint(s.getPoint()*2);
 						//Need to make a new slot to represent the hole that was created
-						Slot hole = new Slot(null, s.getSize(), s.getIndexPoint()+1, s.getIndexPoint());
+						Slot hole = new Slot(null, s.getSize(), s.getPoint()+1, s.getPoint());
 						memory[i+s.getSize()]=hole;
-						s.setBuddyReference(s.getIndexPoint()+1);
+						s.setRef(s.getPoint()+1);
 					}
 					//finally set the process to the slot after all the holes
 					s.setProcess(p);
@@ -117,12 +117,12 @@ public class MMU
 	/**
 	 * Tries to merge two empty chunks of the same size that are buddies
 	 * @param index
-	 * @return true if merges, false if there is no merge
+	 * @return true if merges, false if there is no merge or fails to merge
 	 */
 	private boolean merge(int index)		//index or hole
 	{
 		//If the chunk is the max size of memory, return false
-		if(memory[index].getSize() ==  memorySize)
+		if(index >= numChunks || index < 0 || memory[index].getSize() ==  numChunks)
 			return false;
 		
 		//Indexes past to the next different chunk
@@ -130,67 +130,91 @@ public class MMU
 		
 		//If it is within memory bounds, both chunks are empty, and are buddies
 		//then merge
-		if(index + a < memory.length && memory[index].isHole() && memory[index+a].isHole() 
-				&& (memory[index].getRef() == memory[index+a].getIndexPoint())
+		if(index + a < numChunks && memory[index].isHole() && memory[index+a].isHole() 
+				&& (memory[index].getRef() == memory[index+a].getPoint())
 				&& (memory[index].getSize() == memory[index+a].getSize()))
 		{
 			//Index doubles the chunk size
-			memory[index].doubleChunkSize();
+			memory[index].doubleSize();
 			//Index cuts the index point
-			memory[index].setIndexPoint(memory[index].getIndexPoint()/2);
+			memory[index].setPoint(memory[index].getPoint()/2);
 			
 			/*
 			 * Is the new index even or odd?
 			 * If even, point to the next memory chunk
 			 * If odd, point to the previous memory chunk
 			 */
-			if(memory[index].getIndexPoint() % 2 == 1)
-				memory[index].setBuddyReference(memory[index].getIndexPoint()-1);
-			else
-				memory[index].setBuddyReference(memory[index].getIndexPoint()+1);
+			setReference(index);
 			
-			//Number of indexes in buddy chunk
-			int size = memory[index+a].getSize()/chunkSize;
+			memory[index+a] = null;
 			
-			//Set each of the buddy chunk's min chunks to the new chunk
-			for(int i = index+a; i < size; i++)
-				memory[i] = memory[index];
+			//Can we merge again?
+			merge(index);
 			
 			//Has merged
 			return true;
 		}
 		//If the next chunk isn't a buddy, check the previous chunk 
-		else if(index != 0 && memory[index].isHole() && memory[index-1].isHole()
-				&& (memory[index].getRef() == memory[index-1].getIndexPoint())
+		else if(index-a >= 0 && memory[index].isHole() && memory[index-a].isHole()
+				&& (memory[index].getRef() == memory[index-1].getPoint())
 				&& (memory[index].getSize() == memory[index-1].getSize()))
 		{
 			//Previous chunk doubles chunk size
-			memory[index-1].doubleChunkSize();
+			memory[index-a].doubleSize();
 			//Previous index cuts index point
-			memory[index-1].setIndexPoint(memory[index-1].getIndexPoint()/2);
+			memory[index-a].setPoint(memory[index-a].getPoint()/2);
 			
 			/*
 			 * Is the new index even or odd?
 			 * If even, point to the next memory chunk
 			 * If odd, point to the previous memory chunk
 			 */
-			if(memory[index-1].getIndexPoint() % 2 == 1)
-				memory[index-1].setBuddyReference(memory[index-1].getIndexPoint()-1);
-			else
-				memory[index-1].setBuddyReference(memory[index-1].getIndexPoint()+1);
+			setReference(index-a);
 			
-			//Number of indexes in buddy chunk
-			int size = memory[index].getSize()/chunkSize;
+			memory[index] = null;
 			
-			//Set each of the buddy chunk's min chunks to the new chunk
-			for(int i = index; i < size; i++)
-				memory[i] = memory[index-1];
+			//Can we merge again?
+			merge(index-a);
 			
 			//Has merged
 			return true;
 		}
 		
 		//Did not merge chunks
+		return false;
+	}
+	
+	/**
+	 * This method sets the reference to an indexed Slot
+	 * If it is even and within range,
+	 * @param index
+	 * @return
+	 */
+	private boolean setReference(int index)
+	{
+		if(index < 0 || index >= numChunks || memory[index] == null)
+			return false;
+		
+		int size = memory[index].getSize();
+		
+		if(memory[index].getPoint() % 2 == 1)
+		{
+			if(numChunks > index-size && index-size >= 0)
+			{
+				memory[index].setRef(memory[index].getPoint()-1);
+				return true;
+			}
+		}
+		else if(memory[index].getPoint() % 2 == 0)
+		{
+			if(numChunks > index-size && index-size >= 0)
+			{
+				memory[index].setRef(memory[index].getPoint()+1);
+				return true;
+			}
+		}
+		
+		memory[index].setRef(memory[index].getPoint());
 		return false;
 	}
 	

@@ -88,7 +88,7 @@ public class Slot
 	 * @param size the size to be set
 	 * @return true if successful, false if otherwise
 	 */
-    public void setChunkSize(int size)
+    public void setSize(int size)
     {
     	this.size = size;
     }
@@ -96,7 +96,7 @@ public class Slot
     /**
 	 * Doubles the chunk size if merging
 	 */
-    public void doubleChunkSize()
+    public void doubleSize()
     {
     	size *= 2;
     }
@@ -104,7 +104,7 @@ public class Slot
     /**
 	 * Chunks the chunk size to obtain suitable size for process
 	 */
-    public void cutChunkSize()
+    public void cutSize()
     {
     	size /= 2;
     }
@@ -122,7 +122,7 @@ public class Slot
 	 * Sets the buddy reference to this Chunk
 	 * @param reference the Chunk to be set
 	 */
-    public void setBuddyReference(int reference)
+    public void setRef(int reference)
     {
     	ref = reference;
     }
@@ -131,7 +131,7 @@ public class Slot
 	 * Gets the index point of the Chunk
 	 * @return the index point of this Chunk
 	 */
-    public int getIndexPoint()
+    public int getPoint()
     {
     	return point;
     }
@@ -140,7 +140,7 @@ public class Slot
 	 * Sets the index point of the Chunk
 	 * @param index the point to be set
 	 */
-    public void setIndexPoint(int index)
+    public void setPoint(int index)
     {
     	point = index;
     }
