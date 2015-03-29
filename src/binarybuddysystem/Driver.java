@@ -6,7 +6,9 @@ public class Driver
 	
 	public static void main(String[] args)
 	{
-		
+		MMU memory = new MMU(16, 2);
+		//memory.allocate(new Process("a", 4);
+		System.out.println(memory);
 	}
 	
 	/*
@@ -24,6 +26,14 @@ public class Driver
 	
 	static public boolean removeProcess()
 	{
+		return false;
+	}
+	
+	static public boolean addProcess()
+	{
+		
+		//Code to check that process is size between 1 and memory Size
+		
 		return false;
 	}
 	

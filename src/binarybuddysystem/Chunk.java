@@ -144,4 +144,13 @@ public class Chunk
     {
     	point = index;
     }
+    
+    
+    /*
+     * @return returns a String denoting this chunks current state
+     */
+    public String toString()
+    {
+    	return "name: "+process.getName()+", size: "+chunkSize+", points: "+point+" buddy: "+buddyReference;
+    }
 }

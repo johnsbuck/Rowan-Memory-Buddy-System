@@ -6,36 +6,30 @@ public class MMU
 						//Each element is the minimum chunk size
 						//Should it be a LinkedList instead?
 	
-	int minChunkSize;	//Minimum chunk size (2^k)
-	int memorySize;		//Total Memory Size	(2^n)
+	private int minChunkSize;	//Minimum chunk size (2^k)
+	private int memorySize;		//Total Memory Size	(2^n)
+	private int numChunks;
 	/*
 	 * memorySize = memory.length * minChunkSize;
 	 */
 	
 
 	/**
-	 * Default constructor for the MMU
+	 * constructor for MMU, needs memorySize and chunkSize.
 	 * @param blocks number of blocks this MMU is responsible for
 	 */
-	public MMU()
-	{
-		memorySize = 0;
-		minChunkSize = 0;
-		memory = new Chunk[memorySize/minChunkSize];
-	}
-	
-	public MMU(int mSize, int minSize)
-	{
-		memorySize = mSize;
-		minChunkSize = minSize;
-		memory = new Chunk[memorySize/minChunkSize];
+	public MMU(int memSize, int chunkSize)
+	{		
+		memorySize = memSize;
+		minChunkSize = chunkSize;
+		numChunks = memorySize/minChunkSize;
+		//initialize memory # of Chunks = memorySize/ChunkSize
+		//If prior 2 are chosen correctly, should divide evenly
+		memory = new Chunk[numChunks];
 		
-		Chunk firstChunk = new Chunk(null, memorySize/minChunkSize, 0, 0);
-		
-		for(int i = 0; i < memorySize/minChunkSize; i++)
-		{
-			memory[i] = firstChunk;
-		}
+		//Initialize that the entire memory is one unit that is a hole
+		Process initial = new Process("hole", numChunks);
+		memory[0]=new Chunk(initial, numChunks, 0, 0);
 	}
 	
 	/**
@@ -45,6 +39,45 @@ public class MMU
 	 */
 	public boolean allocate(Process p)
 	{
+		//Need to find best chunkSize to fit process in
+		int processSize = p.size();
+		//how many chunks in memory this process will take up
+		int chunksNeeded = 1;
+		
+		//Start at minChunkSize and keep doubling until processSize fits.
+		//This will give us the best fit for the process
+		int i = minChunkSize;
+		while(i<processSize){
+			i = i << 1 ;
+		}
+		
+		//This will give us the amount of chunks needed for this process in memory.
+		chunksNeeded = i / minChunkSize;
+		
+		//Now that we have the number of chunks, lets find a hole that has enough space in it to fit
+		//Easiest case
+		i=0;
+		Process slot;//will be used in loop
+		while(i<numChunks){
+			slot = memory[i].getProcess();
+			//we found a hole!
+			if(slot.getName().equals("hole")){
+				//check if Size is large enough
+				if(slot.size()>=chunksNeeded){
+					//Ok, this slot is large enough, Lets see if we can break it up
+					//and get a better fit
+					while(slot.size()/2 >= chunksNeeded){
+						//We can split this hole into two buddy holes
+						
+					}
+				}
+				else{
+					//check if this hole is bordering another hole and allocate accordingly
+				}
+			}
+		}
+		
+		
 		return false;
 	}
 	
@@ -122,8 +155,6 @@ public class MMU
 			for(int i = index+a; i < size; i++)
 				memory[i] = memory[index];
 			
-			//Try to merge with larger buddy
-			merge(index);
 			//Has merged
 			return true;
 		}
@@ -154,10 +185,6 @@ public class MMU
 			for(int i = index; i < size; i++)
 				memory[i] = memory[index-1];
 			
-			size = memory[index-1].getChunkSize()/minChunkSize;
-			
-			//Try to merge with larger chunk
-			merge(index - size);
 			//Has merged
 			return true;
 		}
@@ -166,25 +193,15 @@ public class MMU
 		return false;
 	}
 	
-	public String toString()
-	{
-		String str = "Min Chunk Size: " + minChunkSize
-				+ "\nTotal Memory: " + memorySize + "\n\n";
-		String line[] = new String[3];
-		line[0] = "|Index:    |";
-		line[1] = "|Process:  |";
-		line[2] = "|C&P Size: |";
-		
-		int i = 0;
-		while(i < memorySize)
-		{
-			line[0] += memory[i].getIndexPoint() + "\t|";
-			line[1] += memory[i].getProcess().getName() + "\t|";
-			line[2] += memory[i].getChunkSize() + ":" + memory[i].getProcess().size() + "\t|";
+	public String toString(){
+		int size = memory.length;
+		String content ="This piece of memory of size "+memorySize+" bytes contains "+numChunks+ " chunks"+"\n";
+		int i =0;
+		while(i<size){
+			content += memory[i] + "\n";
+			i += memory[i].getProcess().size();
 		}
-		
-		str += line[0] +"\n" + line[1] + "\n" + line[2] + "\n";
-		
-		return str;
+
+		return content;
 	}
 }
