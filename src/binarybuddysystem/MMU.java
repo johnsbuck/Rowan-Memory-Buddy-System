@@ -92,9 +92,9 @@ public class MMU
 	{
 		//Will loop through the memory till it finds the correct process
 		int i = 0;
-		while(i < memorySize)
+		while(i < numChunks)
 		{
-			if(memory[i].getProcess().getName().equals(name))
+			if(!memory[i].isHole() && memory[i].getProcess().getName().equals(name))
 			{
 				//Removes process
 				memory[i].removeProcess();
@@ -103,7 +103,7 @@ public class MMU
 				return true;
 			}
 			//Able to skip more memory this way
-			i += memory[i].getSize()/chunkSize; 
+			i += memory[i].getSize(); 
 		}
 		
 		return false;
