@@ -156,8 +156,8 @@ public class MMU
 		}
 		//If the next chunk isn't a buddy, check the previous chunk 
 		else if(index-a >= 0 && memory[index].isHole() && memory[index-a].isHole()
-				&& (memory[index].getRef() == memory[index-1].getPoint())
-				&& (memory[index].getSize() == memory[index-1].getSize()))
+				&& (memory[index].getRef() == memory[index-a].getPoint())
+				&& (memory[index].getSize() == memory[index-a].getSize()))
 		{
 			//Previous chunk doubles chunk size
 			memory[index-a].doubleSize();
