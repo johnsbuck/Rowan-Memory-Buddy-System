@@ -130,7 +130,7 @@ public class MMU
 		
 		//If it is within memory bounds, both chunks are empty, and are buddies
 		//then merge
-		if(index + a < numChunks && memory[index].isHole() && memory[index+a].isHole() 
+		if(index + a < numChunks && memory[index+a] != null && memory[index].isHole() && memory[index+a].isHole() 
 				&& (memory[index].getRef() == memory[index+a].getPoint())
 				&& (memory[index].getSize() == memory[index+a].getSize()))
 		{
@@ -155,7 +155,7 @@ public class MMU
 			return true;
 		}
 		//If the next chunk isn't a buddy, check the previous chunk 
-		else if(index-a >= 0 && memory[index].isHole() && memory[index-a].isHole()
+		else if(index-a >= 0 && memory[index-a] != null && memory[index].isHole() && memory[index-a].isHole()
 				&& (memory[index].getRef() == memory[index-a].getPoint())
 				&& (memory[index].getSize() == memory[index-a].getSize()))
 		{
