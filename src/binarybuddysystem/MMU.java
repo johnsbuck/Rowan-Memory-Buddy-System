@@ -126,7 +126,7 @@ public class MMU
 			return false;
 		
 		//Indexes past to the next different chunk
-		int a = memory[index].getSize()/chunkSize;
+		int a = memory[index].getSize();
 		
 		//If it is within memory bounds, both chunks are empty, and are buddies
 		//then merge
