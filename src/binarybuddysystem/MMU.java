@@ -79,7 +79,7 @@ public class MMU
 			i+=initialSlotSize;
 		}
 		
-		return allocated;
+		return false;
 	}
 	
 	/**
