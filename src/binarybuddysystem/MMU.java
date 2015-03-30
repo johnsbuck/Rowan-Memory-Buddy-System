@@ -80,7 +80,7 @@ public class MMU
 		}
 		
 		
-		return false;
+		return allocated;
 	}
 	
 	/**
