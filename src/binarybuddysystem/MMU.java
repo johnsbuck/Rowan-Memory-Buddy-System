@@ -41,6 +41,9 @@ public class MMU
 		//Need to find best chunkSize to fit process in
 		int processSize = p.size();
 		
+		//If process of same name exists
+		if(getProcess(p.getName()) != null)
+			return false;
 		
 		//Start at minChunkSize and keep doubling until processSize fits.
 		//This will give us the best fit for the process
@@ -79,12 +82,7 @@ public class MMU
 			i+=initialSlotSize;
 		}
 		
-<<<<<<< HEAD
-		return false;
-=======
-		
 		return allocated;
->>>>>>> e03f8d1dc982182ed6f1197b7f0bc34ad53921a8
 	}
 	
 	/**
@@ -215,6 +213,23 @@ public class MMU
 		
 		memory[index].setRef(memory[index].getPoint());
 		return false;
+	}
+	
+	public String getProcess(String name)
+	{
+		int i = 0;
+		
+		while(i < numChunks)
+		{
+			if(!memory[i].isHole() && memory[i].getProcess().getName().equals(name))
+			{
+				return memory[i].getProcess().toString();
+			}
+			
+			i += memory[i].getSize();
+		}
+		
+		return null;
 	}
 	
 	public String toString(){

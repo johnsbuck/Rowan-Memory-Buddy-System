@@ -19,8 +19,7 @@ public class Process
 	
 	public String toString()
 	{
-		String str = "";
-		return str;
+		return "Process name: \"" + name + "\" | Size: " + size + " byte(s).";
 	}
 
 	public boolean empty()
