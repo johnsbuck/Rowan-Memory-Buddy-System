@@ -79,8 +79,7 @@ public class MMU
 			i+=initialSlotSize;
 		}
 		
-		
-		return false;
+		return allocated;
 	}
 	
 	/**
@@ -106,11 +105,6 @@ public class MMU
 			i += memory[i].getSize(); 
 		}
 		
-		return false;
-	}
-	
-	private boolean partition(int index)	//index or hole
-	{
 		return false;
 	}
 	
