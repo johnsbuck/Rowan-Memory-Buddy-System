@@ -146,7 +146,7 @@ public class Slot
     }
     
     
-    /*
+    /**
      * @return returns a String denoting this chunks current state
      */
     public String toString()

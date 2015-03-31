@@ -22,27 +22,13 @@ public class Process
 		return "Process name: \"" + name + "\" | Size: " + size + " byte(s).";
 	}
 
-	public boolean empty()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public String getName()
 	{
-		// TODO Auto-generated method stub
 		return name;
-	}
-
-	public boolean emptyProcess()
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public int size()
 	{
-		// TODO Auto-generated method stub
 		return size;
 	}
 }
