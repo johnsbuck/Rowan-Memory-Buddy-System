@@ -204,7 +204,7 @@ public class MMU
 		}
 		else if(memory[index].getPoint() % 2 == 0)
 		{
-			if(numChunks > index-size && index-size >= 0)
+			if(numChunks > index+size && index+size >= 0)
 			{
 				memory[index].setRef(memory[index].getPoint()+1);
 				return true;
