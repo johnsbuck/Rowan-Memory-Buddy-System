@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import javax.swing.JFrame;
+
+import binarybuddysystem.view.MemoryViewWindow;
+
 public class Driver {
 	// static MMU manager;
 	private static BufferedReader stdin = new BufferedReader(
@@ -13,8 +17,20 @@ public class Driver {
 	private static int chunk;
 	private static int memorySize;
 
-	public static void main(String[] args) throws IOException {
-		run();
+	public static void main(String[] args) throws IOException
+	{
+		try
+		{
+			if(args[0].equals("showgui"))
+			{
+				JFrame f = new MemoryViewWindow();
+				f.setVisible(true);
+			}
+		}
+		finally
+		{
+			run();
+		}
 		// MMU memory = new MMU(16, 2);
 		// memory.allocate(new Process("a", 8));
 		// memory.allocate(new Process("b", 2));
