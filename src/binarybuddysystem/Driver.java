@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 
 import javax.swing.JFrame;
 
-import binarybuddysystem.view.MemoryViewWindow;
+import binarybuddysystem.view.MainWindow;
 
 public class Driver {
 	// static MMU manager;
@@ -23,11 +23,11 @@ public class Driver {
 		{
 			if(args[0].equals("showgui"))
 			{
-				JFrame f = new MemoryViewWindow();
+				JFrame f = new MainWindow();
 				f.setVisible(true);
 			}
 		}
-		finally
+		catch(IndexOutOfBoundsException e)
 		{
 			run();
 		}
