@@ -32,7 +32,7 @@ public class MainWindow extends JFrame
 	{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		setSize(640, 480);
+		setSize(1024, 1024);
 		setTitle("MMU View Window");
 		
 		v = new MemoryView(numBlocks);
@@ -42,7 +42,5 @@ public class MainWindow extends JFrame
 		
 		detailPanel.add(addBtn);
 		detailPanel.add(remBtn);
-		
-		pack();
 	}
 }

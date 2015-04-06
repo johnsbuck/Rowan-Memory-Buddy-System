@@ -14,12 +14,13 @@ import javax.swing.JPanel;
  */
 public class MemoryView extends JPanel
 {
-	private int blocks = 0;
-	private String[] processes;
+	private Block[] blocks;
 	
-	public MemoryView(int blocks)
+	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
+	
+	public MemoryView(int numBlocks)
 	{
-		this.setBlocks(blocks);
+		blocks = new Block[numBlocks];
 		
 		setPreferredSize(new Dimension(640, 64));
 		setBorder(BorderFactory.createLoweredBevelBorder());
@@ -28,17 +29,22 @@ public class MemoryView extends JPanel
 	public void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, getWidth(), getHeight());
-	}
-
-	public int getBlocks()
-	{
-		return blocks;
-	}
-
-	public void setBlocks(int blocks)
-	{
-		this.blocks = blocks;
+		
+		Block prev = blocks[0];
+		for(int i = 0; i < blocks.length; i ++)
+		{
+			float blockSize = ((float)getWidth() / blocks.length);
+			
+			if(blocks[i] == null)
+			{
+				g.setColor(getBackground());
+			}
+			else if(blocks[i] != prev)
+			{
+				g.setColor(new Color(colors[i % colors.length]));
+			}
+			g.fillRect(i * (int)blockSize, 0, (int) blockSize, getHeight());
+			prev = blocks[i];
+		}
 	}
 }
