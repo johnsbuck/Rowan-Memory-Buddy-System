@@ -23,7 +23,7 @@ public class Driver {
 		{
 			if(args[0].equals("showgui"))
 			{
-				JFrame f = new MainWindow();
+				JFrame f = new MainWindow(Integer.parseInt(args[1]));
 				f.setVisible(true);
 			}
 		}

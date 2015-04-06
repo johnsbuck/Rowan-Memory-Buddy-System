@@ -1,55 +1,48 @@
 package binarybuddysystem.view;
 
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-
-import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.Component;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
-public class MainWindow extends JFrame implements ComponentListener
+import java.awt.BorderLayout;
+
+public class MainWindow extends JFrame
 {
+	static
+	{
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e)
+		{
+			System.err.println("Unable to set system Look & Feel");
+		}
+	}
+	
 	MemoryView v;
 	JPanel detailPanel = new JPanel();
+	JButton addBtn = new JButton("Add Process");
+	JButton remBtn = new JButton("Remove Process");
 	
-	public MainWindow()
+	public MainWindow(int numBlocks)
 	{
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		setSize(640, 480);
 		setTitle("MMU View Window");
-		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		
-		v = new MemoryView();
-		v.setAlignmentY(Component.TOP_ALIGNMENT);
-		v.setSize(30, 30);
+		v = new MemoryView(numBlocks);
 		
-		getContentPane().add(v);
-		getContentPane().add(detailPanel);
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e)
-	{
+		add(v, BorderLayout.NORTH);
+		add(detailPanel, BorderLayout.CENTER);
 		
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e)
-	{
+		detailPanel.add(addBtn);
+		detailPanel.add(remBtn);
 		
-	}
-
-	@Override
-	public void componentResized(ComponentEvent e)
-	{
-		v.setSize(getWidth(), 35);
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e)
-	{
-		
+		pack();
 	}
 }
