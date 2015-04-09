@@ -16,73 +16,60 @@ public class MemoryView extends JPanel
 {
 	int procCnt = 0;
 	
-	Process[] blocks;
+	Block[] blocks;
 	
 	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
 	
 	public MemoryView(int size)
 	{
-		blocks = new Process[size];
+		blocks = new Block[size];
 		
 		setPreferredSize(new Dimension(640, 64));
 		setBorder(BorderFactory.createLoweredBevelBorder());
-		
-		/* TEST CASES */
-		
-		Process p1 = new Process("Process 1");
-		Process p2 = new Process("Process 2");
-		Process p3 = new Process("Process 3");
-		
-		blocks[0] = p1;
-		blocks[1] = p1;
-		blocks[2] = p1;
-
-		blocks[4] = p3;
-		
-		blocks[5] = p2;
-		blocks[6] = p2;
-		blocks[7] = p3;
-		
-		/* END TEST CAES */
 	}
 	
 	public void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
 		
-		Process prev = blocks[0];
-		
 		g.setColor(new Color(colors[0]));
+		g.setXORMode(getBackground());
 		
 		for(int i = 0; i < blocks.length; i ++)
 		{
 			float blockSize = ((float)getWidth() / blocks.length);
+			Block tmp = blocks[i];
 			
-			if(blocks[i] == null)
+			int incr = 1;
+			
+			if(tmp == null)
 			{
 				g.setColor(getBackground());
+//				System.out.println("Current IDX: " + String.valueOf(i));
 			}
-			else if(!blocks[i].equals(prev))
+			else
 			{
-				g.setColor(new Color(colors[(i) % colors.length]));
+				g.setColor(new Color(tmp.color));
+				
+				incr = tmp.chunkSize;
+//				System.out.println("Current IDX: " + String.valueOf(i) + ", BlkSz: " + String.valueOf(tmp.chunkSize));
 			}
-			g.fillRect(i * (int)blockSize, 0, (int) blockSize, getHeight());
-			prev = blocks[i];
+			g.fillRect(i * (int)blockSize, 0, (int) blockSize * incr, getHeight());
+			
+			i += incr - 1;
 		}
 	}
 	
-	public int addProcess(Process p, Color c)
+	public void addProcess(Block b, int blkIdx)
 	{
-		blocks[procCnt] = p;
-		// Return process pid and increment for next created process
-		
+		blocks[blkIdx] = b;
 		repaint();
-		
-		return procCnt ++;
 	}
 	
-	public void removeProcess(int pNum)
+	public void removeProcess(int blkIdx)
 	{
+		blocks[blkIdx] = null;
 		
+		repaint();
 	}
 }

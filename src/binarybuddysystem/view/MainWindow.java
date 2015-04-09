@@ -40,7 +40,7 @@ public class MainWindow extends JFrame implements ActionListener
 		setTitle("MMU View Window");
 		
 		mv = new MemoryView(numBlocks);
-		pv = new ProcessView();
+		pv = new ProcessView(numBlocks);
 		
 		add(pv, BorderLayout.CENTER);
 		add(mv, BorderLayout.NORTH);
@@ -53,6 +53,9 @@ public class MainWindow extends JFrame implements ActionListener
 		detailPanel.add(remBtn);
 		
 		addBtn.addActionListener(this);
+		remBtn.addActionListener(this);
+		
+		revalidate();
 	}
 
 	@Override
@@ -60,11 +63,24 @@ public class MainWindow extends JFrame implements ActionListener
 	{
 		if(e.getActionCommand().equals("AddProcess"))
 		{
-			mv.addProcess(new Process("Test Process"), Color.blue);
-		}
-		else if(e.getActionCommand().equals("RemProcess"))
-		{
+			/* TEST CASES */
 			
+			Block b1 = new Block("Process 1", 0xFF0000, 3);
+			Block b2 = new Block("Process 2", 0xFFFF00, 1);
+			Block b3 = new Block("Process 3", 0x00FF00, 2);
+			
+			mv.addProcess(b1, 0);
+			pv.addProcess(b1, 0);
+			mv.addProcess(b2, 4);
+			pv.addProcess(b2, 4);
+			mv.addProcess(b3, 5);
+			pv.addProcess(b3, 5);
+			/* END TEST CAES */
+		}
+		if(e.getActionCommand().equals("RemProcess"))
+		{
+			mv.removeProcess(5);
+			pv.removeProcess(5);
 		}
 	}
 }
