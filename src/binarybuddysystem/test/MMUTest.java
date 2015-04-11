@@ -29,51 +29,51 @@ public class MMUTest
 	@Test
 	public void AllocTest1()
 	{
-		assertTrue(testMMU.allocate(p1));
-		assertTrue(testMMU.allocate(p2));
-		assertTrue(testMMU.allocate(p3));
-		assertFalse(testMMU.allocate(p4));
-		assertTrue(testMMU.allocate(p5));
+		assertEquals(testMMU.allocate(p1.getName(), p1.size()), new int[] {0, 0});
+		assertEquals(testMMU.allocate(p2.getName(), p2.size()), new int[] {0, 0});
+		assertEquals(testMMU.allocate(p3.getName(), p3.size()), new int[] {0, 0});
+		assertEquals(testMMU.allocate(p4.getName(), p4.size()), new int[] {0, 0});
+		assertEquals(testMMU.allocate(p5.getName(), p5.size()), new int[] {0, 0});
 	}
 	
 	@Test
 	public void AllocTest2()
 	{
-		assertTrue(testMMU.allocate(p4));
-		assertFalse(testMMU.allocate(p1));
+		assertEquals(testMMU.allocate(p4.getName(), p4.size()), new int[] {0, 0});
+		assertEquals(testMMU.allocate(p1.getName(), p1.size()), new int[] {0, 0});
 	}
 	
 	@Test
 	public void AllocDeallocTest1()
 	{
-		assertTrue(testMMU.allocate(p4));
-		assertFalse(testMMU.allocate(p1));
+		assertEquals(testMMU.allocate(p4.getName(), p4.size()), new int[] {0, 0});
+		assertEquals(testMMU.allocate(p1.getName(), p1.size()), new int[] {0, 0});
 		
 		assertTrue(testMMU.deallocate("Process 4"));
 		
-		assertTrue(testMMU.allocate(p1));
-		assertTrue(testMMU.allocate(p3));
-		assertTrue(testMMU.allocate(p5));
+		assertEquals(testMMU.allocate(p1.getName(), p1.size()), new int[] {0, 0});
+		assertEquals(testMMU.allocate(p3.getName(), p3.size()), new int[] {0, 0});
+		assertEquals(testMMU.allocate(p5.getName(), p5.size()), new int[] {0, 0});
 		
 		assertTrue(testMMU.deallocate("Process 1"));
 		assertTrue(testMMU.deallocate("Process 3"));
 		assertTrue(testMMU.deallocate("Process 5"));
 		
-		assertTrue(testMMU.allocate(p4));
+		assertEquals(testMMU.allocate(p4.getName(), p4.size()), new int[] {0, 0});
 	}
 	
 	@Test
 	public void AllocDeallocTest2()
 	{
-		assertTrue(testMMU.allocate(p3));
+		assertEquals(testMMU.allocate(p3.getName(), p3.size()), new int[] {0, 0});
 		
-		assertTrue(testMMU.allocate(p5));
+		assertEquals(testMMU.allocate(p5.getName(), p5.size()), new int[] {0, 0});
 		
-		assertTrue(testMMU.allocate(p1));
+		assertEquals(testMMU.allocate(p1.getName(), p1.size()), new int[] {0, 0});
 		
 		assertTrue(testMMU.deallocate("Process 3"));
 		
-		assertTrue(testMMU.allocate(p0));
+		assertEquals(testMMU.allocate(p0.getName(), p0.size()), new int[] {0, 0});
 	}
 
 }
