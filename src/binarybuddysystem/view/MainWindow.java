@@ -1,55 +1,86 @@
 package binarybuddysystem.view;
 
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-
-import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.Component;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
-public class MainWindow extends JFrame implements ComponentListener
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class MainWindow extends JFrame implements ActionListener
 {
-	MemoryView v;
-	JPanel detailPanel = new JPanel();
+	static
+	{
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e)
+		{
+			System.err.println("Unable to set system Look & Feel");
+		}
+	}
 	
-	public MainWindow()
+	MemoryView mv;
+	ProcessView pv;
+	JPanel detailPanel = new JPanel();
+	JButton addBtn = new JButton("Add Process");
+	JButton remBtn = new JButton("Remove Process");
+	
+	public MainWindow(int numBlocks)
 	{
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		setSize(640, 480);
+		setSize(1024, 480);
 		setTitle("MMU View Window");
-		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		
-		v = new MemoryView();
-		v.setAlignmentY(Component.TOP_ALIGNMENT);
-		v.setSize(30, 30);
+		mv = new MemoryView(numBlocks);
+		pv = new ProcessView(numBlocks);
 		
-		getContentPane().add(v);
-		getContentPane().add(detailPanel);
+		add(pv, BorderLayout.CENTER);
+		add(mv, BorderLayout.NORTH);
+		add(detailPanel, BorderLayout.SOUTH);
+		
+		addBtn.setActionCommand("AddProcess");
+		remBtn.setActionCommand("RemProcess");
+		
+		detailPanel.add(addBtn);
+		detailPanel.add(remBtn);
+		
+		addBtn.addActionListener(this);
+		remBtn.addActionListener(this);
+		
+		revalidate();
 	}
 
 	@Override
-	public void componentHidden(ComponentEvent e)
+	public void actionPerformed(ActionEvent e)
 	{
-		
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e)
-	{
-		
-	}
-
-	@Override
-	public void componentResized(ComponentEvent e)
-	{
-		v.setSize(getWidth(), 35);
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e)
-	{
-		
+		if(e.getActionCommand().equals("AddProcess"))
+		{
+			/* TEST CASES */
+			
+			Block b1 = new Block("Process 1", 0xFF0000, 3);
+			Block b2 = new Block("Process 2", 0xFFFF00, 1);
+			Block b3 = new Block("Process 3", 0x00FF00, 2);
+			
+			mv.addProcess(b1, 0);
+			pv.addProcess(b1, 0);
+			mv.addProcess(b2, 4);
+			pv.addProcess(b2, 4);
+			mv.addProcess(b3, 5);
+			pv.addProcess(b3, 5);
+			/* END TEST CAES */
+		}
+		if(e.getActionCommand().equals("RemProcess"))
+		{
+			mv.removeProcess(5);
+			pv.removeProcess(5);
+		}
 	}
 }
