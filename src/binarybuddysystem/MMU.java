@@ -34,16 +34,20 @@ public class MMU
 	/**
 	 * Allocates memory for a Process
 	 * @param p the process to allocate and add to the Memory
-	 * @return true on success, false otherwise
+	 * @return 2 integers, first being the location and the second being the chunk size. If they are equal to -1, then it didn't allocate
 	 */
-	public boolean allocate(Process p)
+	public int[] allocate(String name, int size)
 	{
+		Process p = new Process(name, size);
 		//Need to find best chunkSize to fit process in
 		int processSize = p.size();
+		int [] ret = new int[2];
+		ret[0] = -1;
+		ret[1] = -1;
 		
 		//If process of same name exists
 		if(getProcess(p.getName()) != null)
-			return false;
+			return ret;
 		
 		//Start at minChunkSize and keep doubling until processSize fits.
 		//This will give us the best fit for the process
@@ -77,12 +81,14 @@ public class MMU
 					//finally set the process to the slot after all the holes
 					s.setProcess(p);
 					allocated = true;
+					ret[0] = i;
+					ret[1] = s.getSize();
 				}
 			}
 			i+=initialSlotSize;
 		}
 		
-		return allocated;
+		return ret;
 	}
 	
 	/**

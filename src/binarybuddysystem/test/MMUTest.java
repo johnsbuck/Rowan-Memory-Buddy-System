@@ -7,6 +7,8 @@ import binarybuddysystem.Process;
 import org.junit.Before;
 import org.junit.Test;
 
+//Edited allocate method, need to rework with integer values
+
 public class MMUTest
 {
 	MMU testMMU;

@@ -111,7 +111,7 @@ public class Driver {
 				size = Integer.parseInt(userInputSize);
 			}
 		}
-		if (memory.allocate(new Process(userInputName, size)) == false) {
+		if (memory.allocate(userInputName, size)[0] == -1) {
 			System.out
 					.println("The process could not be allocated into memory.");
 		} else {
