@@ -47,6 +47,8 @@ public class MainWindow extends JFrame implements ActionListener
 	
 	int blockSize;
 	
+	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
+	
 	public MainWindow(MMU parent, int memSize, int blkSize)
 	{
 		memory = parent;
@@ -91,7 +93,7 @@ public class MainWindow extends JFrame implements ActionListener
 				System.out.println(result[0]);
 				System.out.println(result[1]);
 				
-				Block b = new Block(pName.getText(), 0xFF0000, result[1]);
+				Block b = new Block(pName.getText(), colors[result[0]/2 % colors.length], result[1]);
 				mv.addProcess(b, result[0]);
 				pv.addProcess(b, result[0]);
 			}
