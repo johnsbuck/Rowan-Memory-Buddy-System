@@ -23,7 +23,8 @@ public class Driver {
 		{
 			if(args[0].equals("showgui"))
 			{
-				JFrame f = new MainWindow(Integer.parseInt(args[1]));
+				MMU memory = new MMU(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+				JFrame f = new MainWindow(memory, Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 				f.setVisible(true);
 			}
 		}
