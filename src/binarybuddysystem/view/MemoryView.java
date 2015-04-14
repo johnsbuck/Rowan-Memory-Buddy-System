@@ -20,9 +20,9 @@ public class MemoryView extends JPanel
 	
 	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
 	
-	public MemoryView(int size)
+	public MemoryView(int numBlocks)
 	{
-		blocks = new Block[size];
+		blocks = new Block[numBlocks];
 		
 		setPreferredSize(new Dimension(640, 64));
 		setBorder(BorderFactory.createLoweredBevelBorder());
