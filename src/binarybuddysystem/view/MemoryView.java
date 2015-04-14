@@ -18,8 +18,6 @@ public class MemoryView extends JPanel
 	
 	Block[] blocks;
 	
-	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
-	
 	public MemoryView(int numBlocks)
 	{
 		blocks = new Block[numBlocks];
@@ -32,8 +30,7 @@ public class MemoryView extends JPanel
 	{
 		super.paintComponent(g);
 		
-		g.setColor(new Color(colors[0]));
-		g.setXORMode(getBackground());
+		g.setColor(getBackground());
 		
 		for(int i = 0; i < blocks.length; i ++)
 		{
