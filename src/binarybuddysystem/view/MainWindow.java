@@ -1,15 +1,25 @@
 package binarybuddysystem.view;
 
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
+
+import binarybuddysystem.MMU;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.ParseException;
 
 public class MainWindow extends JFrame implements ActionListener
 {
@@ -26,34 +36,45 @@ public class MainWindow extends JFrame implements ActionListener
 		}
 	}
 	
+	MMU memory;
+	
 	MemoryView mv;
 	ProcessView pv;
 	JPanel detailPanel = new JPanel();
 	JButton addBtn = new JButton("Add Process");
-	JButton remBtn = new JButton("Remove Process");
+	JTextField pName = new JTextField(16);
+	JFormattedTextField pSize = new JFormattedTextField();
 	
-	public MainWindow(int numBlocks)
+	int blockSize;
+	
+	public MainWindow(MMU parent, int memSize, int blkSize)
 	{
+		memory = parent;
+		blockSize = blkSize;
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		setSize(1024, 480);
 		setTitle("MMU View Window");
 		
-		mv = new MemoryView(numBlocks);
-		pv = new ProcessView(numBlocks);
+		mv = new MemoryView(memSize/blkSize);
+		pv = new ProcessView(memSize/blkSize);
 		
 		add(pv, BorderLayout.CENTER);
 		add(mv, BorderLayout.NORTH);
 		add(detailPanel, BorderLayout.SOUTH);
 		
+		DefaultFormatterFactory format = new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("########")));
+		
+		pSize.setFormatterFactory(format);
+		pSize.setColumns(8);
+		
 		addBtn.setActionCommand("AddProcess");
-		remBtn.setActionCommand("RemProcess");
-		
-		detailPanel.add(addBtn);
-		detailPanel.add(remBtn);
-		
 		addBtn.addActionListener(this);
-		remBtn.addActionListener(this);
+		
+		detailPanel.add(pName);
+		detailPanel.add(pSize);
+		detailPanel.add(addBtn);
 		
 		revalidate();
 	}
@@ -63,7 +84,24 @@ public class MainWindow extends JFrame implements ActionListener
 	{
 		if(e.getActionCommand().equals("AddProcess"))
 		{
+			int[] result = memory.allocate(pName.getText(), Integer.parseInt(pSize.getText()));
+			
+			if(result[0] >= 0 && result[1] >= 1)
+			{
+				System.out.println(result[0]);
+				System.out.println(result[1]);
+				
+				Block b = new Block(pName.getText(), 0xFF0000, result[1]);
+				mv.addProcess(b, result[0]);
+				pv.addProcess(b, result[0]);
+			}
+			else
+			{
+				System.err.println("Failed to allocate");
+			}
 			/* TEST CASES */
+			
+			/*
 			
 			Block b1 = new Block("Process 1", 0xFF0000, 3);
 			Block b2 = new Block("Process 2", 0xFFFF00, 1);
@@ -75,12 +113,10 @@ public class MainWindow extends JFrame implements ActionListener
 			pv.addProcess(b2, 4);
 			mv.addProcess(b3, 5);
 			pv.addProcess(b3, 5);
+			
+			*/
+			
 			/* END TEST CAES */
-		}
-		if(e.getActionCommand().equals("RemProcess"))
-		{
-			mv.removeProcess(5);
-			pv.removeProcess(5);
 		}
 	}
 }
