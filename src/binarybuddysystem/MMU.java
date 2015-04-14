@@ -33,8 +33,9 @@ public class MMU
 	
 	/**
 	 * Allocates memory for a Process
-	 * @param p the process to allocate and add to the Memory
-	 * @return 2 integers, first being the location and the second being the chunk size. If they are equal to -1, then it didn't allocate
+	 * @param name name of process to add
+	 * @param size size of process to add (in bytes)
+	 * @return two integers, first being the location and the second being the chunk size. If they are equal to -1, then it didn't allocate
 	 */
 	public int[] allocate(String name, int size)
 	{
