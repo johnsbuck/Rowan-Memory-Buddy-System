@@ -2,7 +2,6 @@ package binarybuddysystem.view;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -14,12 +13,9 @@ import javax.swing.text.NumberFormatter;
 import binarybuddysystem.MMU;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
-import java.text.Format;
-import java.text.ParseException;
 
 public class MainWindow extends JFrame implements ActionListener
 {
@@ -88,11 +84,8 @@ public class MainWindow extends JFrame implements ActionListener
 		{
 			int[] result = memory.allocate(pName.getText(), Integer.parseInt(pSize.getText()));
 			
-			if(result[0] >= 0 && result[1] >= 1)
+			if(result != null)
 			{
-				System.out.println(result[0]);
-				System.out.println(result[1]);
-				
 				Block b = new Block(pName.getText(), colors[result[0]/2 % colors.length], result[1]);
 				mv.addProcess(b, result[0]);
 				pv.addProcess(b, result[0]);
