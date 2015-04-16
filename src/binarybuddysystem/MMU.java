@@ -42,13 +42,10 @@ public class MMU
 		Process p = new Process(name, size);
 		//Need to find best chunkSize to fit process in
 		int processSize = p.size();
-		int [] ret = new int[2];
-		ret[0] = -1;
-		ret[1] = -1;
 		
 		//If process of same name exists
 		if(getProcess(p.getName()) != null)
-			return ret;
+			return null;
 		
 		//Start at minChunkSize and keep doubling until processSize fits.
 		//This will give us the best fit for the process
@@ -81,15 +78,14 @@ public class MMU
 					}
 					//finally set the process to the slot after all the holes
 					s.setProcess(p);
-					allocated = true;
-					ret[0] = i;
-					ret[1] = s.getSize();
+					int [] ret = {i, s.getSize()};
+					return ret;
 				}
 			}
 			i+=initialSlotSize;
 		}
 		
-		return ret;
+		return null;
 	}
 	
 	/**
