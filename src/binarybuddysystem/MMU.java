@@ -1,14 +1,18 @@
 package binarybuddysystem;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 public class MMU
 {
-	Slot[] memory; 	//Might make wrapper class (Chunk)
+	private ArrayList<LinkedList<Slot>> memory; 	//Might make wrapper class (Chunk)
 						//Each element is the minimum chunk size
 						//Should it be a LinkedList instead?
 	
-	private int chunkSize;	//Minimum chunk size (2^k)
+	private int minChunk;	//Minimum chunk size (2^k)
 	private int memorySize;		//Total Memory Size	(2^n)
 	private int numChunks;
+	int length;
 	/*
 	 * memorySize = memory.length * minChunkSize;
 	 */
@@ -21,14 +25,25 @@ public class MMU
 	public MMU(int memSize, int chunkSize)
 	{		
 		memorySize = memSize;
-		this.chunkSize = chunkSize;
+		minChunk = chunkSize;
 		numChunks = memorySize/chunkSize;
+		
+		int memTest = memorySize;
+		
+		//Set length of ArrayList
+		for(length = 0; memTest >= chunkSize; length++)
+			memTest = memTest >> 1;
+			
 		//initialize memory # of Chunks = memorySize/ChunkSize
 		//If prior 2 are chosen correctly, should divide evenly
-		memory = new Slot[numChunks];
+		memory = new ArrayList<LinkedList<Slot>>(length);
 		
+		for(int i = 0; i < length; i++)
+		{
+			memory.add(new LinkedList<Slot>());
+		}
 		//Initialize that the entire memory is one unit that is a hole
-		memory[0]=new Slot(null, numChunks, 0, 0);
+		memory.get(length-1).add(new Slot(null, 0));
 	}
 	
 	/**
@@ -39,6 +54,63 @@ public class MMU
 	 */
 	public int[] allocate(String name, int size)
 	{
+		Process p = new Process(name, size);
+		
+		if(getProcess(p.getName()) != null)
+			return null;
+		
+		//chunksNeeded is how many minChunks does the slot need
+		int index = minChunk;
+		int i = 0;
+		while(index < p.size())
+		{
+			index = index << 1;
+			i++;
+		}
+		
+		int chunksNeeded = index/minChunk;
+		
+		//Base case: There is a slot that is our size, and we are done.
+		for(Slot s : memory.get(i))
+		{
+			if(s.isHole())
+			{
+				s.setProcess(p);
+				int [] ret = {s.getLocation(), chunksNeeded};
+				return ret;
+			}
+		}
+		
+		//There is no slot that is open and our size, so we must try to make one.
+		int oldIndex = index;
+		for(int j = i + 1; j < length; j++)
+		{	
+			oldIndex = oldIndex << 1;
+			for(Slot s : memory.get(j))
+			{
+				if(s.isHole())
+				{
+					int location = s.getLocation();
+					memory.get(j).remove(s);
+					while(j >= i)
+					{
+						j--;
+						oldIndex = oldIndex >> 1;
+						memory.get(j).add(new Slot(null, location));
+						if(j == i)
+						{
+							memory.get(j).add(new Slot(p, location + chunksNeeded));
+							int ret[] = {location, chunksNeeded};
+							return ret;
+						}
+						location = location + oldIndex/minChunk;
+					}
+				}
+			}
+		}
+		
+		return null;
+		/*
 		Process p = new Process(name, size);
 		//Need to find best chunkSize to fit process in
 		int processSize = p.size();
@@ -86,6 +158,7 @@ public class MMU
 		}
 		
 		return null;
+		*/
 	}
 	
 	/**
@@ -95,6 +168,22 @@ public class MMU
 	 */
 	public boolean deallocate(String name)
 	{
+		for(int i = 0; i < length; i++)
+		{
+			for(Slot s : memory.get(i))
+			{
+				if(!s.isHole() && s.getProcess().getName().equals(name))
+				{
+					s.setProcess(null);
+					merge(i, memory.get(i).indexOf(s));
+					return true;
+				}
+			}
+		}
+		
+		return false;
+		
+		/*
 		//Will loop through the memory till it finds the correct process
 		int i = 0;
 		while(i < numChunks)
@@ -112,6 +201,7 @@ public class MMU
 		}
 		
 		return false;
+		*/
 	}
 	
 	/**
@@ -119,8 +209,59 @@ public class MMU
 	 * @param index
 	 * @return true if merges, false if there is no merge or fails to merge
 	 */
-	private boolean merge(int index)		//index or hole
+	private boolean merge(int index, int slotIndex)		//index or hole
 	{
+		int ref = memory.get(index).get(slotIndex).getLocation();
+		int neighbor = -1;
+		
+		int chunksNeeded = 1;
+		
+		for(int i = 0; i < index; i++)
+		{
+			chunksNeeded = chunksNeeded << 1;
+		}
+		
+		//Buddies are neighboring and are only separated by the # of chunks they need.
+		//If the # of minChunks located is even, the buddy is on the right
+		//otherwise it is one the left and the buddy is even.
+		if((ref/chunksNeeded) % 2 == 0)
+			neighbor = ref + chunksNeeded;
+		else
+			neighbor = ref - chunksNeeded;
+		
+		memory.get(index).remove(slotIndex);
+		
+		for(Slot s : memory.get(index))
+		{
+			if(s.getLocation() == neighbor)
+			{
+				if(!s.isHole())
+				{
+					memory.get(index).add(new Slot(null, ref));
+					return false;
+				}
+				
+				memory.get(index).remove(s);
+				
+				if((ref/chunksNeeded) % 2 == 0)
+				{
+					memory.get(index+1).add(new Slot(null, ref));
+					merge(index+1, memory.get(index+1).size() - 1);
+				}
+				else
+				{
+					memory.get(index+1).add(new Slot(null, neighbor));
+					merge(index+1, memory.get(index+1).size() - 1);
+				}
+				
+				return true;
+			}
+		}
+		
+		memory.get(index).add(new Slot(null, ref));
+		return false;
+		
+		/*
 		//If the chunk is the max size of memory, return false
 		if(index >= numChunks || index < 0 || memory[index].getSize() ==  numChunks)
 			return false;
@@ -139,11 +280,11 @@ public class MMU
 			//Index cuts the index point
 			memory[index].setPoint(memory[index].getPoint()/2);
 			
-			/*
-			 * Is the new index even or odd?
-			 * If even, point to the next memory chunk
-			 * If odd, point to the previous memory chunk
-			 */
+			
+			//Is the new index even or odd?
+			// If even, point to the next memory chunk
+			// If odd, point to the previous memory chunk
+			 
 			setReference(index);
 			
 			memory[index+a] = null;
@@ -164,11 +305,11 @@ public class MMU
 			//Previous index cuts index point
 			memory[index-a].setPoint(memory[index-a].getPoint()/2);
 			
-			/*
-			 * Is the new index even or odd?
-			 * If even, point to the next memory chunk
-			 * If odd, point to the previous memory chunk
-			 */
+			
+			// Is the new index even or odd?
+			// If even, point to the next memory chunk
+			// If odd, point to the previous memory chunk
+			 
 			setReference(index-a);
 			
 			memory[index] = null;
@@ -182,66 +323,36 @@ public class MMU
 		
 		//Did not merge chunks
 		return false;
-	}
-	
-	/**
-	 * This method sets the reference to an indexed Slot
-	 * If it is even and within range,
-	 * @param index
-	 * @return
-	 */
-	private boolean setReference(int index)
-	{
-		if(index < 0 || index >= numChunks || memory[index] == null)
-			return false;
-		
-		int size = memory[index].getSize();
-		
-		if(memory[index].getPoint() % 2 == 1)
-		{
-			if(numChunks > index-size && index-size >= 0)
-			{
-				memory[index].setRef(memory[index].getPoint()-1);
-				return true;
-			}
-		}
-		else if(memory[index].getPoint() % 2 == 0)
-		{
-			if(numChunks > index+size && index+size >= 0)
-			{
-				memory[index].setRef(memory[index].getPoint()+1);
-				return true;
-			}
-		}
-		
-		memory[index].setRef(memory[index].getPoint());
-		return false;
+		*/
 	}
 	
 	public String getProcess(String name)
 	{
-		int i = 0;
-		
-		while(i < numChunks)
+		for(int i = 0; i < length; i++)
 		{
-			if(!memory[i].isHole() && memory[i].getProcess().getName().equals(name))
+			for(Slot s : memory.get(i))
 			{
-				return memory[i].getProcess().toString();
+				if(!s.isHole() && s.getProcess().getName().equals(name))
+				{
+					return s.getProcess().toString();
+				}
 			}
-			
-			i += memory[i].getSize();
 		}
 		
 		return null;
 	}
 	
 	public String toString(){
-		int size = memory.length;
-		String content ="This piece of memory of size "+memorySize+" bytes contains "+numChunks+ " chunks"+"\n";
-		int i =0;
-		while(i<size){
-			content += memory[i] + "\n";
-			i += memory[i].getSize();
+		String content = "This piece of memory of size " + memorySize
+						+ " bytes contains " + numChunks 
+						+ " chunks (" + minChunk + " bytes per chunk)\n";
+		
+		int chunksNeeded = 1;
+		for(int i = 0; i < length; i++)
+		{
+			for(Slot s : memory.get(i))
+				content += s  + ", Size: " + chunksNeeded + " chunk(s)\n";
+			chunksNeeded = chunksNeeded << 1;
 		}
 
 		return content;

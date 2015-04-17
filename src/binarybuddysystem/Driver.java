@@ -103,16 +103,16 @@ public class Driver {
 		// Code to check that process is size between 1 and memory Size
 		boolean sizeCheck = false;
 		while (sizeCheck == false) {
-			if (size < memorySize && size >= chunk) {
+			if (size < memorySize) {
 				sizeCheck = true;
 			} else {
-				System.out.println("Invalid choice. Choose between " + chunk
-						+ " and " + memorySize + ".");
+				System.out.println("Invalid choice. Choose less than or equal to "
+						+ memorySize + ".");
 				userInputSize = stdin.readLine();
 				size = Integer.parseInt(userInputSize);
 			}
 		}
-		if (memory.allocate(userInputName, size)[0] == -1) {
+		if (memory.allocate(userInputName, size) == null) {
 			System.out
 					.println("The process could not be allocated into memory.");
 		} else {
