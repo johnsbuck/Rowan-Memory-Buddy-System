@@ -129,7 +129,7 @@ public class MainWindow extends JFrame implements ActionListener
 		}
 		else
 		{
-			System.err.println("Failed to allocate");
+			System.err.println("Failed to allocate - Name: \"" + name + "\"\tSize: " + size);
 			return false;
 		}
 		

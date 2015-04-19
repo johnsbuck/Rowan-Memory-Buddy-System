@@ -49,7 +49,7 @@ public class AllocatorDeallocator
 			running = true;
 			while(running)
 			{
-				System.out.println("Allocating");
+				//System.out.println("Allocating");
 				mon.allocate();
 			}
 		}
@@ -65,7 +65,7 @@ public class AllocatorDeallocator
 			running = true;
 			while(running)
 			{
-				System.out.println("Deallocating");
+				//System.out.println("Deallocating");
 				mon.deallocate();
 			}
 		}
@@ -85,7 +85,7 @@ public class AllocatorDeallocator
 		{
 			//The # of possible chunks available
 			count = N;
-			msec = 1000;
+			msec = 750;
 			//How many possible 2^x are in the MMU
 			chunkVar = (int) (Math.log(N)/Math.log(2)) + 1;
 			chunkLotto = new int[chunkVar];
@@ -109,10 +109,10 @@ public class AllocatorDeallocator
 			//Max = 2^magnitude
 			//Min = 2^(magnitude - 1) + 1
 			int max = (int) Math.pow(2, magnitude)*minChunk;
-			int min = (magnitude > 0) ? ((int) Math.pow(2, magnitude - 1) + 1)*minChunk : 0;
+			int min = (magnitude > 0) ? ((int) Math.pow(2, magnitude - 1)*minChunk + 1) : 0;
 			
 			int processSize = (rn.nextInt((max - min) + 1) + min);
-			String processName = "P" + chunkLotto[magnitude] + " : " + magnitude + " - " + processSize;
+			String processName = "P" + chunkLotto[magnitude] + " : " + magnitude + " : " + processSize;
 			
 			if(mw.allocate(processName, processSize))
 			{
@@ -128,6 +128,9 @@ public class AllocatorDeallocator
 				{
 					e.printStackTrace();
 				}
+				
+				if(rn.nextInt(100) % 3 == 0)
+					notify();
 			}
 		}
 		
@@ -198,6 +201,9 @@ public class AllocatorDeallocator
 				{
 					e.printStackTrace();
 				}
+				
+				if(rn.nextInt(100) % 3 == 0)
+					notify();
 			}
 			else
 			{

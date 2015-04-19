@@ -78,6 +78,7 @@ public class MMU
 					}
 					//finally set the process to the slot after all the holes
 					s.setProcess(p);
+					allocated = true;
 					int [] ret = {i, s.getSize()};
 					return ret;
 				}
