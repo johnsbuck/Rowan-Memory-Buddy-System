@@ -45,9 +45,9 @@ public class MainWindow extends JFrame implements ActionListener
 	
 	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
 	
-	public MainWindow(MMU parent, int memSize, int blkSize)
+	public MainWindow(int memSize, int blkSize)
 	{
-		memory = parent;
+		memory = new MMU(memSize, blkSize);
 		blockSize = blkSize;
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -112,6 +112,54 @@ public class MainWindow extends JFrame implements ActionListener
 			*/
 			
 			/* END TEST CAES */
+		}
+	}
+	
+	public boolean allocate(String name, int size)
+	{
+		int[] result = memory.allocate(name, size);
+		
+		if(result != null)
+		{
+			Block b = new Block(name, colors[result[0]/2 % colors.length], result[1]);
+			mv.addProcess(b, result[0]);
+			pv.addProcess(b, result[0]);
+			pv.revalidate();
+			pv.repaint();
+		}
+		else
+		{
+			System.err.println("Failed to allocate");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean deallocate(String name)
+	{
+		if(memory.getProcess(name) != null)
+		{
+			int index = mv.getProcessLoc(name);
+			
+			if(index != -1)
+			{
+				memory.deallocate(name);
+				mv.removeProcess(index);
+				pv.removeProcess(index);
+			}
+			else
+			{
+				System.err.println("Failed to deallocate");
+				return false;
+			}
+			
+			return true;
+		}
+		else
+		{
+			System.err.println("Failed to deallocate: Invalid name");
+			return false;
 		}
 	}
 }

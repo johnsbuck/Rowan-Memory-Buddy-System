@@ -13,4 +13,9 @@ public class Block
 		chunkSize = sz;
 		procName = pName;
 	}
+	
+	public String getProcName()
+	{
+		return procName;
+	}
 }

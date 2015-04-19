@@ -63,6 +63,16 @@ public class MemoryView extends JPanel
 		repaint();
 	}
 	
+	public int getProcessLoc(String name)
+	{
+		for(int i = 0; i < blocks.length; i++)
+		{
+			if(blocks[i] != null && blocks[i].getProcName().equals(name))
+				return i;
+		}
+		return -1;
+	}
+	
 	public void removeProcess(int blkIdx)
 	{
 		blocks[blkIdx] = null;
