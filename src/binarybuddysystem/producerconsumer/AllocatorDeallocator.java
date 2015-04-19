@@ -85,7 +85,7 @@ public class AllocatorDeallocator
 		{
 			//The # of possible chunks available
 			count = N;
-			msec = 750;
+			msec = 30;
 			//How many possible 2^x are in the MMU
 			chunkVar = (int) (Math.log(N)/Math.log(2)) + 1;
 			chunkLotto = new int[chunkVar];
@@ -129,7 +129,7 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				if(rn.nextInt(100) % 3 == 0)
+				if(rn.nextInt(100) % 2 == 0)
 					notify();
 			}
 		}
@@ -202,7 +202,7 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				if(rn.nextInt(100) % 3 == 0)
+				if(rn.nextInt(100) % 2 == 0)
 					notify();
 			}
 			else

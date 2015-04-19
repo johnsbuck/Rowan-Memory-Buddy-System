@@ -70,9 +70,9 @@ public class MainWindow extends JFrame implements ActionListener
 		addBtn.setActionCommand("AddProcess");
 		addBtn.addActionListener(this);
 		
-		detailPanel.add(pName);
-		detailPanel.add(pSize);
-		detailPanel.add(addBtn);
+		//detailPanel.add(pName);
+		//detailPanel.add(pSize);
+		//detailPanel.add(addBtn);
 		
 		revalidate();
 	}
