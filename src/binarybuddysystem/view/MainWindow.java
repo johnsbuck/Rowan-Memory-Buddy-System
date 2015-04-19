@@ -36,6 +36,7 @@ public class MainWindow extends JFrame implements ActionListener
 	
 	MMU memory;
 	
+	JScrollPane mvScroll;
 	MemoryView mv;
 	JScrollPane pvScroll;
 	ProcessView pv;
@@ -60,10 +61,11 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		mv = new MemoryView(memSize/blkSize);
 		pv = new ProcessView(memSize/blkSize);
+		mvScroll = new JScrollPane(mv, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		add(pvScroll, BorderLayout.CENTER);
-		add(mv, BorderLayout.NORTH);
+		add(mvScroll, BorderLayout.NORTH);
 		add(detailPanel, BorderLayout.SOUTH);
 		
 		DefaultFormatterFactory format = new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("########")));

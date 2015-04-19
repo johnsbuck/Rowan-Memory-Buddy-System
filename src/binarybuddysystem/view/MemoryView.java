@@ -35,6 +35,13 @@ public class MemoryView extends JPanel
 		for(int i = 0; i < blocks.length; i ++)
 		{
 			int blockSize = (getWidth() / blocks.length);
+			
+			while(blockSize == 0)
+			{
+				this.setSize(getWidth()*2, getHeight());
+				blockSize = (getWidth() / blocks.length);
+			}
+			
 			int blockMod = getWidth() % blocks.length;
 			Block tmp = blocks[i];
 			

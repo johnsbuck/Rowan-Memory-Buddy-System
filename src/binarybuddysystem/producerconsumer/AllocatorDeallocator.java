@@ -39,6 +39,21 @@ public class AllocatorDeallocator
 		dealloc.start();
 	}
 	
+	public AllocatorDeallocator(int memorySize, int minChunk, int speed)
+	{
+		AllocatorDeallocator.memorySize = memorySize;
+		AllocatorDeallocator.minChunk = minChunk;
+		N = memorySize/minChunk;
+		mw = new MainWindow(memorySize, minChunk);
+		mon = new AllocDeallocMonitor(speed);
+		alloc = new Allocator();
+		dealloc = new Deallocator();
+		
+		mw.setVisible(true);
+		alloc.start();
+		dealloc.start();
+	}
+	
 	private static class Allocator extends Thread
 	{
 		private boolean running;
@@ -86,6 +101,23 @@ public class AllocatorDeallocator
 			//The # of possible chunks available
 			count = N;
 			msec = 30;
+			//How many possible 2^x are in the MMU
+			chunkVar = (int) (Math.log(N)/Math.log(2)) + 1;
+			chunkLotto = new int[chunkVar];
+			processes = new ArrayList<String>(N);
+			processSizes = new ArrayList<Integer>(N);
+			
+			for(int i = 0; i < chunkVar; i++)
+			{
+				chunkLotto[chunkVar - 1 - i] = (int) Math.pow(2,i);
+			}
+		}
+		
+		public AllocDeallocMonitor(int speed)
+		{
+			//The # of possible chunks available
+			count = N;
+			msec = speed;
 			//How many possible 2^x are in the MMU
 			chunkVar = (int) (Math.log(N)/Math.log(2)) + 1;
 			chunkLotto = new int[chunkVar];
