@@ -34,7 +34,8 @@ public class MemoryView extends JPanel
 		
 		for(int i = 0; i < blocks.length; i ++)
 		{
-			float blockSize = ((float)getWidth() / blocks.length);
+			int blockSize = (getWidth() / blocks.length);
+			int blockMod = getWidth() % blocks.length;
 			Block tmp = blocks[i];
 			
 			int incr = 1;
@@ -51,7 +52,7 @@ public class MemoryView extends JPanel
 				incr = tmp.chunkSize;
 //				System.out.println("Current IDX: " + String.valueOf(i) + ", BlkSz: " + String.valueOf(tmp.chunkSize));
 			}
-			g.fillRect(i * (int)blockSize, 0, (int) blockSize * incr, getHeight());
+			g.fillRect(i * (int)blockSize, 0, (int) (blockSize * incr) + blockMod, getHeight());
 			
 			i += incr - 1;
 		}

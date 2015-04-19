@@ -39,7 +39,7 @@ public class AllocatorDeallocator
 		dealloc.start();
 	}
 	
-	static class Allocator extends Thread
+	private static class Allocator extends Thread
 	{
 		private boolean running;
 		
@@ -55,7 +55,7 @@ public class AllocatorDeallocator
 		}
 	}
 	
-	static class Deallocator extends Thread
+	private static class Deallocator extends Thread
 	{
 		private boolean running;
 		
@@ -71,7 +71,7 @@ public class AllocatorDeallocator
 		}
 	}
 	
-	static class AllocDeallocMonitor
+	private static class AllocDeallocMonitor
 	{
 		private int chunkVar; //Chunk Variations(variation on chunk size)
 		private int [] chunkLotto;
@@ -172,7 +172,7 @@ public class AllocatorDeallocator
 			//For magnitudes higher, check if there is no more room for it
 			for(int i = magnitude + 1; i < chunkVar; i++)
 			{
-				if(count / ((int) Math.pow(2, i)) < chunkLotto[i])
+				while(count / ((int) Math.pow(2, i)) < chunkLotto[i])
 				{
 					chunkLotto[i]--;
 				}
@@ -228,7 +228,7 @@ public class AllocatorDeallocator
 			//For magnitudes higher, check if there is no more room for it
 			for(int i = magnitude + 1; i < chunkVar; i++)
 			{
-				if(count / ((int) Math.pow(2, i)) > chunkLotto[i])
+				while(count / ((int) Math.pow(2, i)) > chunkLotto[i])
 				{
 					chunkLotto[i]++;
 				}

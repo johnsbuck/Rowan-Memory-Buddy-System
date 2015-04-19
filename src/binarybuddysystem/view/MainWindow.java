@@ -4,7 +4,9 @@ import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.DefaultFormatterFactory;
@@ -35,6 +37,7 @@ public class MainWindow extends JFrame implements ActionListener
 	MMU memory;
 	
 	MemoryView mv;
+	JScrollPane pvScroll;
 	ProcessView pv;
 	JPanel detailPanel = new JPanel();
 	JButton addBtn = new JButton("Add Process");
@@ -57,8 +60,9 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		mv = new MemoryView(memSize/blkSize);
 		pv = new ProcessView(memSize/blkSize);
+		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		add(pv, BorderLayout.CENTER);
+		add(pvScroll, BorderLayout.CENTER);
 		add(mv, BorderLayout.NORTH);
 		add(detailPanel, BorderLayout.SOUTH);
 		
