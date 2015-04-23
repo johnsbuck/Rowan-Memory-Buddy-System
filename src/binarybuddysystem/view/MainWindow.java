@@ -15,6 +15,7 @@ import javax.swing.text.NumberFormatter;
 import binarybuddysystem.MMU;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
@@ -63,7 +64,8 @@ public class MainWindow extends JFrame implements ActionListener
 		pv = new ProcessView(memSize/blkSize);
 		mvScroll = new JScrollPane(mv, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
+		mvScroll.setPreferredSize(mv.getPreferredSize());
+		pvScroll.setPreferredSize(pv.getPreferredSize());
 		add(pvScroll, BorderLayout.CENTER);
 		add(mvScroll, BorderLayout.NORTH);
 		add(detailPanel, BorderLayout.SOUTH);
@@ -80,6 +82,46 @@ public class MainWindow extends JFrame implements ActionListener
 		//detailPanel.add(pSize);
 		//detailPanel.add(addBtn);
 		
+		setPreferredSize(new Dimension(660, mv.getPreferredSize().height + 115));
+		
+		pack();
+		revalidate();
+	}
+
+	public MainWindow(int memSize, int blkSize, int colorSize)
+	{
+		memory = new MMU(memSize, blkSize);
+		blockSize = blkSize;
+		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		setSize(1024, 480);
+		setTitle("MMU View Window");
+		
+		mv = new MemoryView(memSize/blkSize, colorSize);
+		pv = new ProcessView(memSize/blkSize);
+		mvScroll = new JScrollPane(mv, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		mvScroll.setPreferredSize(mv.getPreferredSize());
+		add(pvScroll, BorderLayout.CENTER);
+		add(mvScroll, BorderLayout.NORTH);
+		add(detailPanel, BorderLayout.SOUTH);
+		
+		DefaultFormatterFactory format = new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("########")));
+		
+		pSize.setFormatterFactory(format);
+		pSize.setColumns(8);
+		
+		addBtn.setActionCommand("AddProcess");
+		addBtn.addActionListener(this);
+		
+		//detailPanel.add(pName);
+		//detailPanel.add(pSize);
+		//detailPanel.add(addBtn);
+		
+		setPreferredSize(new Dimension(660, mv.getPreferredSize().height + 115));
+		
+		pack();
 		revalidate();
 	}
 
@@ -127,7 +169,7 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		if(result != null)
 		{
-			Block b = new Block(name, colors[result[0]/2 % colors.length], result[1]);
+			Block b = new Block(name, colors[result[0] % colors.length], result[1]);
 			mv.addProcess(b, result[0]);
 			pv.addProcess(b, result[0]);
 			pv.revalidate();

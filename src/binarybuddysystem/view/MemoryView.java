@@ -21,9 +21,29 @@ public class MemoryView extends JPanel
 	public MemoryView(int numBlocks)
 	{
 		blocks = new Block[numBlocks];
+		int colorBlockSize = 1;
+		int width = numBlocks * colorBlockSize;
+		if(width <= 640)
+			setPreferredSize(new Dimension(640, 64));
+		else
+			setPreferredSize(new Dimension(width, 64));
 		
-		setPreferredSize(new Dimension(640, 64));
-		setBorder(BorderFactory.createLoweredBevelBorder());
+		//setBorder(BorderFactory.createLoweredBevelBorder());
+	}
+	
+	public MemoryView(int numBlocks, int colorSize)
+	{
+		blocks = new Block[numBlocks];
+		int colorBlockSize = 1;
+		if(colorSize > 0)
+			colorBlockSize = colorSize;
+		int width = numBlocks * colorBlockSize;
+		if(width <= 640)
+			setPreferredSize(new Dimension(640, 64));
+		else
+			setPreferredSize(new Dimension(width, 64));
+		
+		//setBorder(BorderFactory.createLoweredBevelBorder());
 	}
 	
 	public void paintComponent(Graphics g)
@@ -35,13 +55,6 @@ public class MemoryView extends JPanel
 		for(int i = 0; i < blocks.length; i ++)
 		{
 			int blockSize = (getWidth() / blocks.length);
-			
-			while(blockSize == 0)
-			{
-				this.setSize(getWidth()*2, getHeight());
-				blockSize = (getWidth() / blocks.length);
-			}
-			
 			int blockMod = getWidth() % blocks.length;
 			Block tmp = blocks[i];
 			

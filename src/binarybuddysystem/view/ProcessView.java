@@ -2,6 +2,7 @@ package binarybuddysystem.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -17,7 +18,6 @@ public class ProcessView extends JPanel
 	{
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		
 		blocks = new ProcessLabel[size];
 		
 		revalidate();

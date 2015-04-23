@@ -17,6 +17,7 @@ import binarybuddysystem.view.MainWindow;
 public class AllocatorDeallocator
 {
 	private static int N;
+	private static int msec;
 	private static int memorySize;
 	private static int minChunk;
 	private static Allocator alloc;
@@ -29,6 +30,8 @@ public class AllocatorDeallocator
 		AllocatorDeallocator.memorySize = memorySize;
 		AllocatorDeallocator.minChunk = minChunk;
 		N = memorySize/minChunk;
+		msec = 30; //30 msec
+		
 		mw = new MainWindow(memorySize, minChunk);
 		mon = new AllocDeallocMonitor();
 		alloc = new Allocator();
@@ -44,8 +47,10 @@ public class AllocatorDeallocator
 		AllocatorDeallocator.memorySize = memorySize;
 		AllocatorDeallocator.minChunk = minChunk;
 		N = memorySize/minChunk;
+		msec = speed;
+		
 		mw = new MainWindow(memorySize, minChunk);
-		mon = new AllocDeallocMonitor(speed);
+		mon = new AllocDeallocMonitor();
 		alloc = new Allocator();
 		dealloc = new Deallocator();
 		
@@ -54,6 +59,24 @@ public class AllocatorDeallocator
 		dealloc.start();
 	}
 	
+	public AllocatorDeallocator(int memorySize, int minChunk, int speed,
+			int colorSize)
+	{
+		AllocatorDeallocator.memorySize = memorySize;
+		AllocatorDeallocator.minChunk = minChunk;
+		N = memorySize/minChunk;
+		msec = speed;
+		
+		mw = new MainWindow(memorySize, minChunk, colorSize);
+		mon = new AllocDeallocMonitor();
+		alloc = new Allocator();
+		dealloc = new Deallocator();
+		
+		mw.setVisible(true);
+		alloc.start();
+		dealloc.start();
+	}
+
 	private static class Allocator extends Thread
 	{
 		private boolean running;
@@ -93,31 +116,12 @@ public class AllocatorDeallocator
 		private static ArrayList<String> processes;
 		private static ArrayList<Integer> processSizes;
 		private Random rn = new Random();
-		private int msec;
 		private int count;
 		
 		public AllocDeallocMonitor()
 		{
 			//The # of possible chunks available
 			count = N;
-			msec = 30;
-			//How many possible 2^x are in the MMU
-			chunkVar = (int) (Math.log(N)/Math.log(2)) + 1;
-			chunkLotto = new int[chunkVar];
-			processes = new ArrayList<String>(N);
-			processSizes = new ArrayList<Integer>(N);
-			
-			for(int i = 0; i < chunkVar; i++)
-			{
-				chunkLotto[chunkVar - 1 - i] = (int) Math.pow(2,i);
-			}
-		}
-		
-		public AllocDeallocMonitor(int speed)
-		{
-			//The # of possible chunks available
-			count = N;
-			msec = speed;
 			//How many possible 2^x are in the MMU
 			chunkVar = (int) (Math.log(N)/Math.log(2)) + 1;
 			chunkLotto = new int[chunkVar];
@@ -141,7 +145,7 @@ public class AllocatorDeallocator
 			//Max = 2^magnitude
 			//Min = 2^(magnitude - 1) + 1
 			int max = (int) Math.pow(2, magnitude)*minChunk;
-			int min = (magnitude > 0) ? ((int) Math.pow(2, magnitude - 1)*minChunk + 1) : 0;
+			int min = (magnitude > 0) ? ((int) Math.pow(2, magnitude - 1)*minChunk + 1) : 1;
 			
 			int processSize = (rn.nextInt((max - min) + 1) + min);
 			String processName = "P" + chunkLotto[magnitude] + " : " + magnitude + " : " + processSize;
@@ -161,8 +165,7 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				if(rn.nextInt(100) % 2 == 0)
-					notify();
+				randomNotify();
 			}
 		}
 		
@@ -234,8 +237,7 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				if(rn.nextInt(100) % 2 == 0)
-					notify();
+				randomNotify();
 			}
 			else
 			{
@@ -265,6 +267,12 @@ public class AllocatorDeallocator
 					chunkLotto[i]++;
 				}
 			}
+		}
+		
+		private void randomNotify()
+		{
+			if(rn.nextInt(100) % 2 == 0)
+				notify();
 		}
 		
 		private void sleep()
