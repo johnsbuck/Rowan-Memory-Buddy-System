@@ -134,7 +134,7 @@ public class MainWindow extends JFrame implements ActionListener
 			
 			if(result != null)
 			{
-				Block b = new Block(pName.getText(), colors[result[0]/2 % colors.length], result[1]);
+				Block b = new Block(pName.getText(), colors[result[0] % colors.length], result[1]);
 				mv.addProcess(b, result[0]);
 				pv.addProcess(b, result[0]);
 			}
