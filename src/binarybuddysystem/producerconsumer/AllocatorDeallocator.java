@@ -91,17 +91,17 @@ public class AllocatorDeallocator
 			{
 				//System.out.println("Allocating");
 				mon.allocate();
-				/*
+				
 				try
 				{
 					if(rn.nextInt(10) == 0)
-						this.sleep(1000);
+						this.sleep(msec*2);
 				} catch (InterruptedException e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				*/
+				
 			}
 		}
 	}
@@ -118,17 +118,17 @@ public class AllocatorDeallocator
 			{
 				//System.out.println("Deallocating");
 				mon.deallocate();
-				/*
+				
 				try
 				{
-					if(rn.nextInt(10) == 0)
-						this.sleep(1000);
+					if(rn.nextInt(5) == 0)
+						this.sleep(msec*2);
 				} catch (InterruptedException e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				*/
+				
 			}
 		}
 	}
@@ -188,7 +188,7 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				randomNotify();
+				randomNotifyDealloc();
 			}
 		}
 		
@@ -260,7 +260,7 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				randomNotify();
+				randomNotifyAlloc();
 			}
 			else
 			{
@@ -292,11 +292,25 @@ public class AllocatorDeallocator
 			}
 		}
 		
-		private void randomNotify()
+		private void randomNotifyDealloc()
 		{
 			if(rn.nextInt(2) == 0)
 			{
-				notify();
+				synchronized(dealloc)
+				{
+					notify();
+				}
+			}
+		}
+		
+		private void randomNotifyAlloc()
+		{
+			if(rn.nextInt(2) == 0)
+			{
+				synchronized(alloc)
+				{
+					notify();
+				}
 			}
 		}
 		
