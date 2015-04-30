@@ -91,18 +91,17 @@ public class AllocatorDeallocator
 			{
 				//System.out.println("Allocating");
 				mon.allocate();
-				
-				if(rn.nextInt(25) == 0)
+				/*
+				try
 				{
-					try
-					{
-						Thread.sleep(msec*2);
-					} catch (InterruptedException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					if(rn.nextInt(10) == 0)
+						this.sleep(1000);
+				} catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				*/
 			}
 		}
 	}
@@ -119,18 +118,17 @@ public class AllocatorDeallocator
 			{
 				//System.out.println("Deallocating");
 				mon.deallocate();
-
-				if(rn.nextInt(25) == 0)
+				/*
+				try
 				{
-					try
-					{
-						Thread.sleep(msec*2);
-					} catch (InterruptedException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					if(rn.nextInt(10) == 0)
+						this.sleep(1000);
+				} catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				*/
 			}
 		}
 	}
@@ -262,6 +260,7 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
+				randomNotify();
 			}
 			else
 			{
@@ -295,7 +294,7 @@ public class AllocatorDeallocator
 		
 		private void randomNotify()
 		{
-			if(rn.nextInt(100) % 2 == 0)
+			if(rn.nextInt(2) == 0)
 			{
 				notify();
 			}
