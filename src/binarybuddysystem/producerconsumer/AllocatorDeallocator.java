@@ -165,7 +165,8 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				randomNotify();
+				if(rn.nextInt(100) % 2 == 0)
+					dealloc.notify();
 			}
 		}
 		
@@ -237,7 +238,8 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				randomNotify();
+				if(rn.nextInt(100) % 2 == 0)
+					alloc.notify();
 			}
 			else
 			{
