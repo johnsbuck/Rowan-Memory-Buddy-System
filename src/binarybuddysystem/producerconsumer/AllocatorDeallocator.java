@@ -25,6 +25,8 @@ public class AllocatorDeallocator
 	private static AllocDeallocMonitor mon;
 	private static MainWindow mw;
 	
+	private static Random rn = new Random();
+	
 	public AllocatorDeallocator(int memorySize, int minChunk)
 	{
 		AllocatorDeallocator.memorySize = memorySize;
@@ -89,6 +91,18 @@ public class AllocatorDeallocator
 			{
 				//System.out.println("Allocating");
 				mon.allocate();
+				
+				if(rn.nextInt(25) == 0)
+				{
+					try
+					{
+						Thread.sleep(msec*2);
+					} catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}
@@ -105,6 +119,18 @@ public class AllocatorDeallocator
 			{
 				//System.out.println("Deallocating");
 				mon.deallocate();
+
+				if(rn.nextInt(25) == 0)
+				{
+					try
+					{
+						Thread.sleep(msec*2);
+					} catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}
@@ -115,7 +141,6 @@ public class AllocatorDeallocator
 		private int [] chunkLotto;
 		private static ArrayList<String> processes;
 		private static ArrayList<Integer> processSizes;
-		private Random rn = new Random();
 		private int count;
 		
 		public AllocDeallocMonitor()
@@ -273,14 +298,6 @@ public class AllocatorDeallocator
 			if(rn.nextInt(100) % 2 == 0)
 			{
 				notify();
-				try
-				{
-					wait();
-				} 
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
 			}
 		}
 		
