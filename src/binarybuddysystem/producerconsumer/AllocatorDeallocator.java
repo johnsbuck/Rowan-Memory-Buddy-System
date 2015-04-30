@@ -237,7 +237,6 @@ public class AllocatorDeallocator
 					e.printStackTrace();
 				}
 				
-				randomNotify();
 			}
 			else
 			{
@@ -272,7 +271,17 @@ public class AllocatorDeallocator
 		private void randomNotify()
 		{
 			if(rn.nextInt(100) % 2 == 0)
+			{
 				notify();
+				try
+				{
+					wait();
+				} 
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
 		
 		private void sleep()
