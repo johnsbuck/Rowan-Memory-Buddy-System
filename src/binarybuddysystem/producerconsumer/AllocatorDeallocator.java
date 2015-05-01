@@ -32,9 +32,9 @@ public class AllocatorDeallocator
 		AllocatorDeallocator.memorySize = memorySize;
 		AllocatorDeallocator.minChunk = minChunk;
 		N = memorySize/minChunk;
-		msec = 30; //30 msec
+		msec = 500; //500 msec
 		
-		mw = new MainWindow(memorySize, minChunk);
+		mw = new MainWindow(true, memorySize, minChunk);
 		mon = new AllocDeallocMonitor();
 		alloc = new Allocator();
 		dealloc = new Deallocator();
@@ -51,7 +51,7 @@ public class AllocatorDeallocator
 		N = memorySize/minChunk;
 		msec = speed;
 		
-		mw = new MainWindow(memorySize, minChunk);
+		mw = new MainWindow(true, memorySize, minChunk);
 		mon = new AllocDeallocMonitor();
 		alloc = new Allocator();
 		dealloc = new Deallocator();
@@ -69,7 +69,7 @@ public class AllocatorDeallocator
 		N = memorySize/minChunk;
 		msec = speed;
 		
-		mw = new MainWindow(memorySize, minChunk, colorSize);
+		mw = new MainWindow(true, memorySize, minChunk, colorSize);
 		mon = new AllocDeallocMonitor();
 		alloc = new Allocator();
 		dealloc = new Deallocator();

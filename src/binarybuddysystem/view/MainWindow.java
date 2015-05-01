@@ -43,6 +43,7 @@ public class MainWindow extends JFrame implements ActionListener
 	ProcessView pv;
 	JPanel detailPanel = new JPanel();
 	JButton addBtn = new JButton("Add Process");
+	JButton rmBtn = new JButton("Remove Process");
 	JTextField pName = new JTextField(16);
 	JFormattedTextField pSize = new JFormattedTextField();
 	
@@ -50,7 +51,7 @@ public class MainWindow extends JFrame implements ActionListener
 	
 	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
 	
-	public MainWindow(int memSize, int blkSize)
+	public MainWindow(boolean auto, int memSize, int blkSize)
 	{
 		memory = new MMU(memSize, blkSize);
 		blockSize = blkSize;
@@ -75,12 +76,19 @@ public class MainWindow extends JFrame implements ActionListener
 		pSize.setFormatterFactory(format);
 		pSize.setColumns(8);
 		
-		addBtn.setActionCommand("AddProcess");
-		addBtn.addActionListener(this);
-		
-		//detailPanel.add(pName);
-		//detailPanel.add(pSize);
-		//detailPanel.add(addBtn);
+		if(!auto)
+		{
+			addBtn.setActionCommand("AddProcess");
+			addBtn.addActionListener(this);
+			
+			rmBtn.setActionCommand("RemoveProcess");
+			rmBtn.addActionListener(this);
+			
+			detailPanel.add(pName);
+			detailPanel.add(pSize);
+			detailPanel.add(addBtn);
+			detailPanel.add(rmBtn);
+		}
 		
 		setPreferredSize(new Dimension(660, mv.getPreferredSize().height + 115));
 		
@@ -88,7 +96,7 @@ public class MainWindow extends JFrame implements ActionListener
 		revalidate();
 	}
 
-	public MainWindow(int memSize, int blkSize, int colorSize)
+	public MainWindow(boolean auto, int memSize, int blkSize, int colorSize)
 	{
 		memory = new MMU(memSize, blkSize);
 		blockSize = blkSize;
@@ -112,12 +120,19 @@ public class MainWindow extends JFrame implements ActionListener
 		pSize.setFormatterFactory(format);
 		pSize.setColumns(8);
 		
-		addBtn.setActionCommand("AddProcess");
-		addBtn.addActionListener(this);
-		
-		//detailPanel.add(pName);
-		//detailPanel.add(pSize);
-		//detailPanel.add(addBtn);
+		if(!auto)
+		{
+			addBtn.setActionCommand("AddProcess");
+			addBtn.addActionListener(this);
+			
+			rmBtn.setActionCommand("RemoveProcess");
+			rmBtn.addActionListener(this);
+			
+			detailPanel.add(pName);
+			detailPanel.add(pSize);
+			detailPanel.add(addBtn);
+			detailPanel.add(rmBtn);
+		}
 		
 		setPreferredSize(new Dimension(660, mv.getPreferredSize().height + 115));
 		
@@ -130,36 +145,27 @@ public class MainWindow extends JFrame implements ActionListener
 	{
 		if(e.getActionCommand().equals("AddProcess"))
 		{
-			int[] result = memory.allocate(pName.getText(), Integer.parseInt(pSize.getText()));
-			
-			if(result != null)
+			try
 			{
-				Block b = new Block(pName.getText(), colors[result[0] % colors.length], result[1]);
-				mv.addProcess(b, result[0]);
-				pv.addProcess(b, result[0]);
+				if(!allocate(pName.getText(), Integer.parseInt(pSize.getText())))
+				{
+					//Replace with Dialog
+					System.err.println("Unable to allocate");
+				}
 			}
-			else
+			catch(NumberFormatException e1)
 			{
-				System.err.println("Failed to allocate");
+				//Replace with Dialog
+				System.err.println("Size must be a number");
 			}
-			/* TEST CASES */
-			
-			/*
-			
-			Block b1 = new Block("Process 1", 0xFF0000, 3);
-			Block b2 = new Block("Process 2", 0xFFFF00, 1);
-			Block b3 = new Block("Process 3", 0x00FF00, 2);
-			
-			mv.addProcess(b1, 0);
-			pv.addProcess(b1, 0);
-			mv.addProcess(b2, 4);
-			pv.addProcess(b2, 4);
-			mv.addProcess(b3, 5);
-			pv.addProcess(b3, 5);
-			
-			*/
-			
-			/* END TEST CAES */
+		}
+		else if(e.getActionCommand().equals("RemoveProcess"))
+		{
+			if(!deallocate(pName.getText()))
+			{
+				//Replace with Dialog
+				System.err.println("Unable to deallocate");
+			}
 		}
 	}
 	
