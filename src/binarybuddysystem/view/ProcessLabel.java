@@ -15,8 +15,10 @@ public class ProcessLabel extends JLabel
 	{
 		super(text);
 		myColor = col;
-		
 		setIcon(new ProcessIcon());
+		setMinimumSize(new Dimension(400,13));
+		setPreferredSize(new Dimension(400,13));
+
 	}
 	
 	private class ProcessIcon implements Icon

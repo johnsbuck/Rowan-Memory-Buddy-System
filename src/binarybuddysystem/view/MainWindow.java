@@ -1,5 +1,6 @@
 package binarybuddysystem.view;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -17,6 +18,7 @@ import binarybuddysystem.MMU;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
@@ -64,13 +66,12 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		setSize(1024, 480);
 		setTitle("MMU View Window || Memory Size: " + memSize + " | Min Chunk Size: " + blkSize);
 		
 		mv = new MemoryView(memSize/blkSize);
 		pv = new ProcessView(memSize/blkSize);
 		detailPanel = new JPanel();
-		detailPanel.setPreferredSize(new Dimension(600, 30));
+		detailPanel.setPreferredSize(new Dimension(0, 0));
 		mvScroll = new JScrollPane(mv, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		mvScroll.setPreferredSize(mv.getPreferredSize());
@@ -85,26 +86,42 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		if(!auto)
 		{
-			add(detailPanel, BorderLayout.SOUTH);
+			detailPanel.setPreferredSize(new Dimension(600, 80));
+
+			JPanel buttonPanel = new JPanel();
+			JPanel textFieldPanel = new JPanel();
+			
+			detailPanel.setLayout(new GridLayout(2,1));
+			
 			addBtn.setActionCommand("AddProcess");
 			addBtn.addActionListener(this);
 			
 			rmBtn.setActionCommand("RemoveProcess");
 			rmBtn.addActionListener(this);
 			
-			detailPanel.add(pNameLabel);
-			detailPanel.add(pName);
-			detailPanel.add(pSizeLabel);
-			detailPanel.add(pSize);
-			detailPanel.add(addBtn);
-			detailPanel.add(rmBtn);
+			textFieldPanel.add(pNameLabel);
+			textFieldPanel.add(pName);
+			textFieldPanel.add(pSizeLabel);
+			textFieldPanel.add(pSize);
+			textFieldPanel.setPreferredSize(new Dimension(600, 20));
+			
+			buttonPanel.add(addBtn);
+			buttonPanel.add(rmBtn);
+			buttonPanel.setPreferredSize(new Dimension(600, 20));
+			
+			detailPanel.add(textFieldPanel);
+			detailPanel.add(buttonPanel);
+			add(detailPanel, BorderLayout.SOUTH);
 		}
 		
-		setPreferredSize(new Dimension(660, mv.getPreferredSize().height + 115));
-		setMinimumSize(new Dimension(600, mv.getPreferredSize().height + 90));
+		setPreferredSize(new Dimension(660, mv.getPreferredSize().height +
+										detailPanel.getPreferredSize().height/2 + 115));
+		setMinimumSize(new Dimension(580, mv.getPreferredSize().height +
+										detailPanel.getPreferredSize().height/2 + 90));
 		
 		pack();
 		revalidate();
+		setVisible(true);
 	}
 
 	public MainWindow(boolean auto, int memSize, int blkSize, int colorSize)
@@ -114,14 +131,16 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		setSize(1024, 480);
 		setTitle("MMU View Window || Memory Size: " + memSize + " | Min Chunk Size: " + blkSize);
 		
 		mv = new MemoryView(memSize/blkSize, colorSize);
 		pv = new ProcessView(memSize/blkSize);
+		detailPanel = new JPanel();
+		detailPanel.setPreferredSize(new Dimension(0, 0));
 		mvScroll = new JScrollPane(mv, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		mvScroll.setPreferredSize(mv.getPreferredSize());
+		pvScroll.setPreferredSize(pv.getPreferredSize());
 		add(pvScroll, BorderLayout.CENTER);
 		add(mvScroll, BorderLayout.NORTH);
 		
@@ -132,26 +151,43 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		if(!auto)
 		{
-			add(detailPanel, BorderLayout.SOUTH);
-			pName.setText("Process Name");
-			pSize.setText("Process Size");
+			detailPanel.setPreferredSize(new Dimension(600, 80));
+			
+			JPanel buttonPanel = new JPanel();
+			JPanel textFieldPanel = new JPanel();
+			
+			detailPanel.setLayout(new GridLayout(2,1));
+			
 			addBtn.setActionCommand("AddProcess");
 			addBtn.addActionListener(this);
 			
 			rmBtn.setActionCommand("RemoveProcess");
 			rmBtn.addActionListener(this);
 			
-			detailPanel.add(pName);
-			detailPanel.add(pSize);
-			detailPanel.add(addBtn);
-			detailPanel.add(rmBtn);
+			textFieldPanel.add(pNameLabel);
+			textFieldPanel.add(pName);
+			textFieldPanel.add(pSizeLabel);
+			textFieldPanel.add(pSize);
+			textFieldPanel.setPreferredSize(new Dimension(600, 20));
+			
+			buttonPanel.add(addBtn);
+			buttonPanel.add(rmBtn);
+			buttonPanel.setPreferredSize(new Dimension(600, 20));
+
+			
+			detailPanel.add(textFieldPanel);
+			detailPanel.add(buttonPanel);
+			add(detailPanel, BorderLayout.SOUTH);
 		}
 		
-		setPreferredSize(new Dimension(660, mv.getPreferredSize().height + 115));
-		setMinimumSize(new Dimension(600, mv.getPreferredSize().height + 90));
+		setPreferredSize(new Dimension(660, mv.getPreferredSize().height +
+				detailPanel.getPreferredSize().height/2 + 115));
+		setMinimumSize(new Dimension(580, mv.getPreferredSize().height +
+				detailPanel.getPreferredSize().height/2 + 90));
 		
 		pack();
 		revalidate();
+		setVisible(true);
 	}
 
 	@Override

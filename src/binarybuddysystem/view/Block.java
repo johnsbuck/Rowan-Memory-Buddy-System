@@ -18,4 +18,9 @@ public class Block
 	{
 		return procName;
 	}
+	
+	public int getProcSize()
+	{
+		return chunkSize;
+	}
 }

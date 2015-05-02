@@ -2,7 +2,9 @@ package binarybuddysystem.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -16,9 +18,12 @@ public class ProcessView extends JPanel
 	
 	public ProcessView(int size)
 	{
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		blocks = new ProcessLabel[size];
+		
+		setPreferredSize(new Dimension(0, size*13));
+		
+		setLayout(new GridLayout(size, 0));
+		//setBorder(BorderFactory.createEmptyBorder());
 		
 		revalidate();
 		repaint();

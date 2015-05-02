@@ -23,8 +23,11 @@ public class Driver
 {
 	public static void main(String[] args)
 	{
-		if(args.length < 3 && args.length != 0)
+		if(args.length == 2 || args.length > 5)
+		{
+			System.err.println("Invalid number of arguments");
 			System.exit(0);
+		}
 		
 		int[] argConvert = null;
 		
@@ -35,35 +38,34 @@ public class Driver
 			if(args[0].equals("automated") || args[0].equals("auto"))
 					auto = true;
 			
-			argConvert = testArgs(args);
+			if(args.length != 1)
+			{
+				argConvert = testArgs(args);
 			
-			if(argConvert == null)
-				System.exit(0);
+				if(argConvert == null)
+					System.exit(0);
+			}
 		}
 		
 		if(auto)
 		{
-			AllocatorDeallocator ad;
 			if(args.length == 3)
-				ad = new AllocatorDeallocator(argConvert[0], argConvert[1]);
-			else if(args.length == 4)	//Memory Size | Chunk Size | Speed (msec)
-				ad = new AllocatorDeallocator(argConvert[0], argConvert[1], argConvert[2]);
-			else if(args.length == 5)	//Memory Size | Chunk Size | Speed (msec) | Color Size
-				ad = new AllocatorDeallocator(argConvert[0], argConvert[1], argConvert[2], argConvert[3]);
+				new AllocatorDeallocator(argConvert[0], argConvert[1]);
+			else if(args.length == 4)
+				new AllocatorDeallocator(argConvert[0], argConvert[1], argConvert[2]);
+			else if(args.length == 5)
+				new AllocatorDeallocator(argConvert[0], argConvert[1], argConvert[2], argConvert[3]);
 			else
-				ad = new AllocatorDeallocator(1024, 64);
+				new AllocatorDeallocator(1024, 64);
 		}
-		else
+		if(!auto)
 		{
-			MainWindow ad;
 			if(args.length == 3)
-				ad = new MainWindow(false, argConvert[0], argConvert[1]);
-			else if(args.length == 4)	//Memory Size | Chunk Size | Color Size
-				ad = new MainWindow(false, argConvert[0], argConvert[1], argConvert[2]);
+				new MainWindow(false, argConvert[0], argConvert[1]);
+			else if(args.length == 4)
+				new MainWindow(false, argConvert[0], argConvert[1], argConvert[2]);
 			else
-				ad = new MainWindow(false, 1024, 64);
-			
-			ad.show();
+				new MainWindow(false, 1024, 64);
 		}
 	}
 	

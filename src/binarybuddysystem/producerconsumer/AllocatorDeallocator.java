@@ -56,7 +56,6 @@ public class AllocatorDeallocator
 		alloc = new Allocator();
 		dealloc = new Deallocator();
 		
-		mw.setVisible(true);
 		alloc.start();
 		dealloc.start();
 	}
