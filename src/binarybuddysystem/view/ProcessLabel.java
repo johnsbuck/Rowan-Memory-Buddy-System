@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
@@ -18,7 +19,6 @@ public class ProcessLabel extends JLabel
 		setIcon(new ProcessIcon());
 		setMinimumSize(new Dimension(400,13));
 		setPreferredSize(new Dimension(400,13));
-
 	}
 	
 	private class ProcessIcon implements Icon

@@ -23,8 +23,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
+/**
+ * This class is used as a viewer of the MMU in the binarybuddysystem package.
+ * 
+ * @author Aaron Rudolph, John Bucknam
+ *
+ */
 public class MainWindow extends JFrame implements ActionListener
 {
+	//Look and feel of OS
 	static
 	{
 		try
@@ -38,29 +45,44 @@ public class MainWindow extends JFrame implements ActionListener
 		}
 	}
 	
+	//Memory Management Unit used for storage
 	private MMU memory;
 	
+	//Custom views
 	private JScrollPane mvScroll;
 	private MemoryView mv;
 	private JScrollPane pvScroll;
 	private ProcessView pv;
 	
+	//Used to add buttons and textfields for manual mode
 	private JPanel detailPanel;
 	
+	//Buttons to be added in manual mode
 	private JButton addBtn = new JButton("Add Process");
 	private JButton rmBtn = new JButton("Remove Process");
 	
+	//Labels and textfields for manual mode
 	private JLabel pNameLabel = new JLabel("Process Name: ");
 	private JTextField pName = new JTextField(16);
 	private JLabel pSizeLabel = new JLabel("Process Size: ");
 	private JFormattedTextField pSize = new JFormattedTextField();
 	
+	//Chunk size
 	private int blockSize;
 	
+	//Possible colors in viewer
 	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
 	
+	/**
+	 * This constructor checks whether it is auto mode (AllocatorDeallocator controls)
+	 * and sets the memory size and chunk size of MMU being viewed.
+	 * @param auto
+	 * @param memSize
+	 * @param blkSize
+	 */
 	public MainWindow(boolean auto, int memSize, int blkSize)
 	{
+		//Set MMU
 		memory = new MMU(memSize, blkSize);
 		blockSize = blkSize;
 		
@@ -68,10 +90,15 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		setTitle("MMU View Window || Memory Size: " + memSize + " | Min Chunk Size: " + blkSize);
 		
+		//Memory and process viewer are set
 		mv = new MemoryView(memSize/blkSize);
 		pv = new ProcessView(memSize/blkSize);
+		
+		//Default detailPanel is set
 		detailPanel = new JPanel();
 		detailPanel.setPreferredSize(new Dimension(0, 0));
+		
+		//Create scroll panes in preference to viewers
 		mvScroll = new JScrollPane(mv, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		mvScroll.setPreferredSize(mv.getPreferredSize());
@@ -79,53 +106,73 @@ public class MainWindow extends JFrame implements ActionListener
 		add(pvScroll, BorderLayout.CENTER);
 		add(mvScroll, BorderLayout.NORTH);
 		
+		//Number formatting
 		DefaultFormatterFactory format = new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("########")));
 		
 		pSize.setFormatterFactory(format);
 		pSize.setColumns(8);
 		
+		//If in manual mode
 		if(!auto)
 		{
+			//Set new detailPanel size
 			detailPanel.setPreferredSize(new Dimension(600, 80));
 
+			//Add panels for buttons and textfields
 			JPanel buttonPanel = new JPanel();
 			JPanel textFieldPanel = new JPanel();
 			
 			detailPanel.setLayout(new GridLayout(2,1));
 			
+			//Set actionListener commands
 			addBtn.setActionCommand("AddProcess");
 			addBtn.addActionListener(this);
 			
 			rmBtn.setActionCommand("RemoveProcess");
 			rmBtn.addActionListener(this);
 			
+			//Add all labels and textfields
 			textFieldPanel.add(pNameLabel);
 			textFieldPanel.add(pName);
 			textFieldPanel.add(pSizeLabel);
 			textFieldPanel.add(pSize);
 			textFieldPanel.setPreferredSize(new Dimension(600, 20));
 			
+			//Add buttons
 			buttonPanel.add(addBtn);
 			buttonPanel.add(rmBtn);
 			buttonPanel.setPreferredSize(new Dimension(600, 20));
 			
+			//Add panels in correlating order
 			detailPanel.add(textFieldPanel);
 			detailPanel.add(buttonPanel);
 			add(detailPanel, BorderLayout.SOUTH);
 		}
 		
+		//Set sizes
 		setPreferredSize(new Dimension(660, mv.getPreferredSize().height +
 										detailPanel.getPreferredSize().height/2 + 115));
 		setMinimumSize(new Dimension(580, mv.getPreferredSize().height +
 										detailPanel.getPreferredSize().height/2 + 90));
 		
+		//Have it go on its way
 		pack();
 		revalidate();
 		setVisible(true);
 	}
-
+	
+	/**
+	 * This constructor checks whether it is auto mode (AllocatorDeallocator controls)
+	 * and sets the memory size and chunk size of MMU being viewed. It also has a custom
+	 * colorSize for the Memory View in case the view sizes are too small
+	 * @param auto
+	 * @param memSize
+	 * @param blkSize
+	 * @param colorSize
+	 */
 	public MainWindow(boolean auto, int memSize, int blkSize, int colorSize)
 	{
+		//Set MMU
 		memory = new MMU(memSize, blkSize);
 		blockSize = blkSize;
 		
@@ -133,10 +180,15 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		setTitle("MMU View Window || Memory Size: " + memSize + " | Min Chunk Size: " + blkSize);
 		
+		//Memory and process viewer are set
 		mv = new MemoryView(memSize/blkSize, colorSize);
 		pv = new ProcessView(memSize/blkSize);
+		
+		//Set default detailPanel
 		detailPanel = new JPanel();
 		detailPanel.setPreferredSize(new Dimension(0, 0));
+		
+		//Create and add scroll panes in preference to viewers
 		mvScroll = new JScrollPane(mv, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		mvScroll.setPreferredSize(mv.getPreferredSize());
@@ -144,52 +196,62 @@ public class MainWindow extends JFrame implements ActionListener
 		add(pvScroll, BorderLayout.CENTER);
 		add(mvScroll, BorderLayout.NORTH);
 		
+		//Number formatting
 		DefaultFormatterFactory format = new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("########")));
 		
 		pSize.setFormatterFactory(format);
 		pSize.setColumns(8);
 		
+		//If in manual mode
 		if(!auto)
 		{
+			//Set actual detailPanel size
 			detailPanel.setPreferredSize(new Dimension(600, 80));
 			
+			//Add panels for textfields and buttons
 			JPanel buttonPanel = new JPanel();
 			JPanel textFieldPanel = new JPanel();
 			
+			//Set layout
 			detailPanel.setLayout(new GridLayout(2,1));
 			
+			//Set actionListener commands
 			addBtn.setActionCommand("AddProcess");
 			addBtn.addActionListener(this);
 			
 			rmBtn.setActionCommand("RemoveProcess");
 			rmBtn.addActionListener(this);
 			
+			//Add textfields and labels
 			textFieldPanel.add(pNameLabel);
 			textFieldPanel.add(pName);
 			textFieldPanel.add(pSizeLabel);
 			textFieldPanel.add(pSize);
 			textFieldPanel.setPreferredSize(new Dimension(600, 20));
 			
+			//Add buttons
 			buttonPanel.add(addBtn);
 			buttonPanel.add(rmBtn);
 			buttonPanel.setPreferredSize(new Dimension(600, 20));
-
 			
+			//Add panels in correlating order
 			detailPanel.add(textFieldPanel);
 			detailPanel.add(buttonPanel);
 			add(detailPanel, BorderLayout.SOUTH);
 		}
 		
+		//Set sizes
 		setPreferredSize(new Dimension(660, mv.getPreferredSize().height +
 				detailPanel.getPreferredSize().height/2 + 115));
 		setMinimumSize(new Dimension(580, mv.getPreferredSize().height +
 				detailPanel.getPreferredSize().height/2 + 90));
 		
+		//Have it go on its way
 		pack();
 		revalidate();
 		setVisible(true);
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
@@ -219,6 +281,16 @@ public class MainWindow extends JFrame implements ActionListener
 		}
 	}
 	
+	/**
+	 * This method attempts to allocate a process into the MMU and then
+	 * adds the process to the memory viewer and process viewer.
+	 * 
+	 * Will fail if the process name is already used or if the memory size is too large
+	 * to fit any chunks.
+	 * @param name
+	 * @param size
+	 * @return true is successful, false if there is no chunk that can fit
+	 */
 	public boolean allocate(String name, int size)
 	{
 		int[] result = memory.allocate(name, size);
@@ -240,6 +312,14 @@ public class MainWindow extends JFrame implements ActionListener
 		return true;
 	}
 	
+	/**
+	 * This method attempts to deallocate any process currently in the MMU and
+	 * removes the process in the memory viewer and process viewer if successful.
+	 * 
+	 * Will fail if the process name does not exist.
+	 * @param name
+	 * @return true if successful, false if there is no process by that name
+	 */
 	public boolean deallocate(String name)
 	{
 		if(memory.getProcess(name) != null)

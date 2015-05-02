@@ -35,7 +35,7 @@ public class Driver
 		
 		if(args.length != 0)
 		{
-			if(args[0].equals("automated") || args[0].equals("auto"))
+			if(args[0].equalsIgnoreCase("automated") || args[0].equalsIgnoreCase("auto"))
 					auto = true;
 			
 			if(args.length != 1)
@@ -49,10 +49,13 @@ public class Driver
 		
 		if(auto)
 		{
+			//Auto, memSize, chunkSize
 			if(args.length == 3)
 				new AllocatorDeallocator(argConvert[0], argConvert[1]);
+			//Auto, memSize, chunkSize, Animation time (msec)
 			else if(args.length == 4)
 				new AllocatorDeallocator(argConvert[0], argConvert[1], argConvert[2]);
+			//Auto, memSize, chunkSize, Animation time (msec), chunkViewSize
 			else if(args.length == 5)
 				new AllocatorDeallocator(argConvert[0], argConvert[1], argConvert[2], argConvert[3]);
 			else
@@ -60,8 +63,10 @@ public class Driver
 		}
 		if(!auto)
 		{
+			//Manual, memSize, chunkSize
 			if(args.length == 3)
 				new MainWindow(false, argConvert[0], argConvert[1]);
+			//Manual, memSize, chunkSize, chunkViewSize
 			else if(args.length == 4)
 				new MainWindow(false, argConvert[0], argConvert[1], argConvert[2]);
 			else

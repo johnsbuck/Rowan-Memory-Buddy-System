@@ -20,9 +20,12 @@ public class ProcessView extends JPanel
 	{
 		blocks = new ProcessLabel[size];
 		
-		setPreferredSize(new Dimension(0, size*13));
+		int h = new ProcessLabel("p1", Color.black).getPreferredSize().height;
+		int pad = 5;
 		
-		setLayout(new GridLayout(size, 0));
+		setPreferredSize(new Dimension(100, size*(h + pad)));
+		
+		setLayout(new GridLayout(size, 0, 0, pad));
 		//setBorder(BorderFactory.createEmptyBorder());
 		
 		revalidate();
