@@ -26,15 +26,20 @@ public class Driver
 		if(args.length < 3 && args.length != 0)
 			System.exit(0);
 		
+		int[] argConvert = null;
+		
 		boolean auto = false;
 		
-		if(args[0].equals("automated") || args[0].equals("auto"))
-				auto = true;
-		
-		int[] argConvert = testArgs(args);
-		
-		if(argConvert == null)
-			System.exit(0);
+		if(args.length != 0)
+		{
+			if(args[0].equals("automated") || args[0].equals("auto"))
+					auto = true;
+			
+			argConvert = testArgs(args);
+			
+			if(argConvert == null)
+				System.exit(0);
+		}
 		
 		if(auto)
 		{
