@@ -23,7 +23,7 @@ public class Driver
 {
 	public static void main(String[] args)
 	{
-		if(args.length < 3)
+		if(args.length < 3 && args.length != 0)
 			System.exit(0);
 		
 		boolean auto = false;

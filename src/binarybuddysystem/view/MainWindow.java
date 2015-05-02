@@ -3,6 +3,7 @@ package binarybuddysystem.view;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -35,19 +36,24 @@ public class MainWindow extends JFrame implements ActionListener
 		}
 	}
 	
-	MMU memory;
+	private MMU memory;
 	
-	JScrollPane mvScroll;
-	MemoryView mv;
-	JScrollPane pvScroll;
-	ProcessView pv;
-	JPanel detailPanel = new JPanel();
-	JButton addBtn = new JButton("Add Process");
-	JButton rmBtn = new JButton("Remove Process");
-	JTextField pName = new JTextField(16);
-	JFormattedTextField pSize = new JFormattedTextField();
+	private JScrollPane mvScroll;
+	private MemoryView mv;
+	private JScrollPane pvScroll;
+	private ProcessView pv;
 	
-	int blockSize;
+	private JPanel detailPanel;
+	
+	private JButton addBtn = new JButton("Add Process");
+	private JButton rmBtn = new JButton("Remove Process");
+	
+	private JLabel pNameLabel = new JLabel("Process Name: ");
+	private JTextField pName = new JTextField(16);
+	private JLabel pSizeLabel = new JLabel("Process Size: ");
+	private JFormattedTextField pSize = new JFormattedTextField();
+	
+	private int blockSize;
 	
 	private int[] colors = {0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF};
 	
@@ -59,17 +65,18 @@ public class MainWindow extends JFrame implements ActionListener
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		setSize(1024, 480);
-		setTitle("MMU View Window");
+		setTitle("MMU View Window || Memory Size: " + memSize + " | Min Chunk Size: " + blkSize);
 		
 		mv = new MemoryView(memSize/blkSize);
 		pv = new ProcessView(memSize/blkSize);
+		detailPanel = new JPanel();
+		detailPanel.setPreferredSize(new Dimension(600, 30));
 		mvScroll = new JScrollPane(mv, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pvScroll = new JScrollPane(pv, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		mvScroll.setPreferredSize(mv.getPreferredSize());
 		pvScroll.setPreferredSize(pv.getPreferredSize());
 		add(pvScroll, BorderLayout.CENTER);
 		add(mvScroll, BorderLayout.NORTH);
-		add(detailPanel, BorderLayout.SOUTH);
 		
 		DefaultFormatterFactory format = new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("########")));
 		
@@ -78,19 +85,23 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		if(!auto)
 		{
+			add(detailPanel, BorderLayout.SOUTH);
 			addBtn.setActionCommand("AddProcess");
 			addBtn.addActionListener(this);
 			
 			rmBtn.setActionCommand("RemoveProcess");
 			rmBtn.addActionListener(this);
 			
+			detailPanel.add(pNameLabel);
 			detailPanel.add(pName);
+			detailPanel.add(pSizeLabel);
 			detailPanel.add(pSize);
 			detailPanel.add(addBtn);
 			detailPanel.add(rmBtn);
 		}
 		
 		setPreferredSize(new Dimension(660, mv.getPreferredSize().height + 115));
+		setMinimumSize(new Dimension(600, mv.getPreferredSize().height + 90));
 		
 		pack();
 		revalidate();
@@ -104,7 +115,7 @@ public class MainWindow extends JFrame implements ActionListener
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		setSize(1024, 480);
-		setTitle("MMU View Window");
+		setTitle("MMU View Window || Memory Size: " + memSize + " | Min Chunk Size: " + blkSize);
 		
 		mv = new MemoryView(memSize/blkSize, colorSize);
 		pv = new ProcessView(memSize/blkSize);
@@ -113,7 +124,6 @@ public class MainWindow extends JFrame implements ActionListener
 		mvScroll.setPreferredSize(mv.getPreferredSize());
 		add(pvScroll, BorderLayout.CENTER);
 		add(mvScroll, BorderLayout.NORTH);
-		add(detailPanel, BorderLayout.SOUTH);
 		
 		DefaultFormatterFactory format = new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("########")));
 		
@@ -122,6 +132,9 @@ public class MainWindow extends JFrame implements ActionListener
 		
 		if(!auto)
 		{
+			add(detailPanel, BorderLayout.SOUTH);
+			pName.setText("Process Name");
+			pSize.setText("Process Size");
 			addBtn.setActionCommand("AddProcess");
 			addBtn.addActionListener(this);
 			
@@ -135,6 +148,7 @@ public class MainWindow extends JFrame implements ActionListener
 		}
 		
 		setPreferredSize(new Dimension(660, mv.getPreferredSize().height + 115));
+		setMinimumSize(new Dimension(600, mv.getPreferredSize().height + 90));
 		
 		pack();
 		revalidate();
