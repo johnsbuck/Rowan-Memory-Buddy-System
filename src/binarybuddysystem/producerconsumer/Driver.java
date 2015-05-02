@@ -25,7 +25,9 @@ public class Driver
 	{
 		if(args.length == 2 || args.length > 5)
 		{
-			System.err.println("Invalid number of arguments");
+			System.err.println("ERROR: Invalid number of arguments");
+			System.err.println("Auto Args: auto MMUSize ChunkSize animTime VChunkSize");
+			System.err.println("Manual Args: manual MMUSize ChunkSize VChunkSize");
 			System.exit(0);
 		}
 		
@@ -34,9 +36,16 @@ public class Driver
 		boolean auto = false;
 		
 		if(args.length != 0)
-		{
-			if(args[0].equalsIgnoreCase("automated") || args[0].equalsIgnoreCase("auto"))
-					auto = true;
+		{	
+			if(args[0].equalsIgnoreCase("auto") || args[0].equalsIgnoreCase("a"))
+				auto = true;
+			else if(args[0].equalsIgnoreCase("manual") || args[0].equalsIgnoreCase("m"))
+				auto = false;
+			else
+			{
+				System.err.println("ERROR: First argument must define manual or auto mode");
+				System.exit(0);
+			}
 			
 			if(args.length != 1)
 			{
@@ -59,10 +68,21 @@ public class Driver
 			else if(args.length == 5)
 				new AllocatorDeallocator(argConvert[0], argConvert[1], argConvert[2], argConvert[3]);
 			else
+			{
+				System.out.println("Default Auto. MMU Size: 1024 | Chunk Size: 64 | Speed: 500 msec | VChunkSize: 1");
 				new AllocatorDeallocator(1024, 64);
+			}
 		}
 		if(!auto)
 		{
+			//If includes animation time
+			if(args.length > 4)
+			{
+				System.err.println("ERROR: Invalid number of arguments");
+				
+				System.err.println("Arguments Allowed: \"manual\" MMUSize ChunkSize VChunkSize");
+				System.exit(0);
+			}
 			//Manual, memSize, chunkSize
 			if(args.length == 3)
 				new MainWindow(false, argConvert[0], argConvert[1]);
@@ -70,7 +90,10 @@ public class Driver
 			else if(args.length == 4)
 				new MainWindow(false, argConvert[0], argConvert[1], argConvert[2]);
 			else
+			{
+				System.out.println("Default Manual. MMU Size: 1024 | Chunk Size: 64 | VChunkSize: 1");
 				new MainWindow(false, 1024, 64);
+			}
 		}
 	}
 	
