@@ -1,5 +1,10 @@
 package binarybuddysystem.view;
 
+/**
+ * Represents a Block to the GUI. Used as a placeholder for various values
+ * @author Aaron N. Rudolph
+ *
+ */
 public class Block
 {
 	public String procName;

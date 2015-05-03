@@ -18,6 +18,10 @@ public class MemoryView extends JPanel
 	
 	Block[] blocks;
 	
+	/**
+	 * Creates a Memory View
+	 * @param numBlocks maximum number of minimum-size blocks
+	 */
 	public MemoryView(int numBlocks)
 	{
 		blocks = new Block[numBlocks];
@@ -30,7 +34,11 @@ public class MemoryView extends JPanel
 		
 		//setBorder(BorderFactory.createLoweredBevelBorder());
 	}
-	
+	/**
+	 * Creates a Memory View with extended parameters
+	 * @param numBlocks maximum number of minimum-size blocks
+	 * @param colorSize number of color table entries to use
+	 */
 	public MemoryView(int numBlocks, int colorSize)
 	{
 		blocks = new Block[numBlocks];
@@ -78,12 +86,22 @@ public class MemoryView extends JPanel
 		}
 	}
 	
+	/**
+	 * Adds a process to the Memory View
+	 * @param b a Block object containing any relevant information
+	 * @param blkIdx index (from MMU) to put this Block at.
+	 */
 	public void addProcess(Block b, int blkIdx)
 	{
 		blocks[blkIdx] = b;
 		repaint();
 	}
 	
+	/**
+	 * Gets the process location
+	 * @param name name of process whose location is to be retrieved
+	 * @return index, or -1 on failure
+	 */
 	public int getProcessLoc(String name)
 	{
 		for(int i = 0; i < blocks.length; i++)
@@ -93,7 +111,10 @@ public class MemoryView extends JPanel
 		}
 		return -1;
 	}
-	
+	/**
+	 * Removes a block from the memory view
+	 * @param blkIdx index (from MMU) of the block to remove
+	 */
 	public void removeProcess(int blkIdx)
 	{
 		blocks[blkIdx] = null;

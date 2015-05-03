@@ -76,9 +76,9 @@ public class MainWindow extends JFrame implements ActionListener
 	/**
 	 * This constructor checks whether it is auto mode (AllocatorDeallocator controls)
 	 * and sets the memory size and chunk size of MMU being viewed.
-	 * @param auto
-	 * @param memSize
-	 * @param blkSize
+	 * @param auto whether or not to run in an automated mode
+	 * @param memSize size of the memory to be used
+	 * @param blkSize minimum block size
 	 */
 	public MainWindow(boolean auto, int memSize, int blkSize)
 	{
@@ -165,10 +165,10 @@ public class MainWindow extends JFrame implements ActionListener
 	 * This constructor checks whether it is auto mode (AllocatorDeallocator controls)
 	 * and sets the memory size and chunk size of MMU being viewed. It also has a custom
 	 * colorSize for the Memory View in case the view sizes are too small
-	 * @param auto
-	 * @param memSize
-	 * @param blkSize
-	 * @param colorSize
+	 * @param auto whether or not to run in an automated mode
+	 * @param memSize size of the memory to be used
+	 * @param blkSize minimum block size
+	 * @param colorSize number of color table entries to use
 	 */
 	public MainWindow(boolean auto, int memSize, int blkSize, int colorSize)
 	{
@@ -287,9 +287,9 @@ public class MainWindow extends JFrame implements ActionListener
 	 * 
 	 * Will fail if the process name is already used or if the memory size is too large
 	 * to fit any chunks.
-	 * @param name
-	 * @param size
-	 * @return true is successful, false if there is no chunk that can fit
+	 * @param name name of the process
+	 * @param size size of the process
+	 * @return true if successful, false if there is no chunk that can fit
 	 */
 	public boolean allocate(String name, int size)
 	{
@@ -317,7 +317,7 @@ public class MainWindow extends JFrame implements ActionListener
 	 * removes the process in the memory viewer and process viewer if successful.
 	 * 
 	 * Will fail if the process name does not exist.
-	 * @param name
+	 * @param name name of process
 	 * @return true if successful, false if there is no process by that name
 	 */
 	public boolean deallocate(String name)

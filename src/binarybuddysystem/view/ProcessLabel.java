@@ -9,9 +9,20 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
+/**
+ * Custom JLabel with color block for use with ProcessView
+ * @author Aaron N. Rudolph
+ *
+ */
 public class ProcessLabel extends JLabel
 {
 	Color myColor;
+	
+	/**
+	 * Instantiates a new ProcessLabel
+	 * @param text text to display
+	 * @param col color to use for the legend
+	 */
 	public ProcessLabel(String text, Color col)
 	{
 		super(text);
